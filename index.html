@@ -567,6 +567,27 @@ footer strong{color:var(--amber);}
 [data-theme="light"] .tab-btn{color:var(--text-faint);}
 [data-theme="light"] .tab-btn.active{color:var(--carrot);border-bottom-color:var(--carrot);}
 
+/* ══════════ LIGHT MODE SIDEBAR OVERRIDES ══════════ */
+[data-theme="light"] #sidebar{background:#FFF8F0;box-shadow:4px 0 28px rgba(44,18,6,.14);}
+[data-theme="light"] .sb-hdr{border-bottom-color:var(--border);}
+[data-theme="light"] .sb-logo{color:var(--carrot);}
+[data-theme="light"] .sb-logo em{color:var(--carrot-deep);}
+[data-theme="light"] .sb-close{background:rgba(44,18,6,.07);color:var(--carrot);}
+[data-theme="light"] .sb-close:hover{background:var(--carrot);color:#fff;}
+[data-theme="light"] .sb-lbl{color:var(--text-faint);}
+[data-theme="light"] .sb-link{color:var(--text-muted);border-left-color:transparent;}
+[data-theme="light"] .sb-link:hover,[data-theme="light"] .sb-link.active{background:rgba(232,98,42,.1);color:var(--carrot-deep);border-left-color:var(--carrot);}
+
+/* ══════════ LIGHT MODE PAGE-NAV OVERRIDES (Settings / About) ══════════ */
+[data-theme="light"] .page-nav{background:#FFFFFF;box-shadow:0 2px 16px rgba(44,18,6,.1);}
+[data-theme="light"] .back-btn{color:var(--text-muted);}
+[data-theme="light"] .back-btn:hover{color:var(--carrot);}
+[data-theme="light"] .page-nav-t{color:var(--carrot);}
+
+/* ══════════ LIGHT MODE FOOTER OVERRIDE ══════════ */
+[data-theme="light"] footer{background:var(--bg-elevated);color:var(--text-faint);}
+[data-theme="light"] footer strong{color:var(--carrot);}
+
 /* ══════════ REDUCE MOTION ══════════ */
 .reduce-motion *,.reduce-motion *::before,.reduce-motion *::after{
   animation-duration:.01ms!important;animation-iteration-count:1!important;
@@ -1053,7 +1074,7 @@ footer strong{color:var(--amber);}
      SCRIPT
 ════════════════════════════════════════════ -->
 
-  <script>
+<script>
 'use strict';
 
 /* ═══════════════════════════════════════════
@@ -1092,8 +1113,6 @@ const bookmarksData = [
   // Add real bookmarks here, e.g.:
   // { title:'My Novel', emoji:'📖', bg:'linear-gradient(160deg,#E8622A,#3B1A08)', genre:'Fantasy', href:'#' },
 ];
-
-'use strict';
 
 /* ═══════════════════════════════════════════
    STORAGE & THEME
@@ -1861,11 +1880,9 @@ document.addEventListener('click', e => {
   // Call the loading-bar render hook now that init is done
   if (typeof window._lsAfterRender === 'function') window._lsAfterRender();
 
-  // Set current year in footers
-  const fyEl = document.getElementById('fy');
-  if (fyEl) fyEl.textContent = new Date().getFullYear();
-  const fy2El = document.getElementById('fy2');
-  if (fy2El) fy2El.textContent = new Date().getFullYear();
+  // Set the footer year
+  const fy = document.getElementById('fy');
+  if (fy) fy.textContent = new Date().getFullYear();
 })();
 </script>
 </body>
