@@ -8,768 +8,469 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="description" content="NovéLore — Read Without Limits"/>
 <title>NovéLore</title>
-
-<!-- GitHub Pages compatible: Google Fonts with preconnect -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
-
 <style>
-/* ═══════════════════════════════════════════
-   THEME TOKENS — light & dark
-═══════════════════════════════════════════ */
+/* ═══════════════ VARIABLES ═══════════════ */
 :root {
-  /* carrot brand (same both modes) */
-  --carrot:       #E8622A;
-  --carrot-deep:  #C44B1A;
-  --carrot-light: #F4924A;
-  --carrot-pale:  #FDDBB8;
-  --amber:        #F5B942;
-
-  /* sidebar always dark */
-  --sb-bg:        #3B1A08;
-  --sb-mid:       #6B3318;
-  --sb-light:     #A0582A;
-
-  --radius: 12px;
-  --shadow: 0 4px 20px rgba(60,26,8,.13);
-  --shadow-lg: 0 12px 48px rgba(60,26,8,.22);
-  --nav-h: 60px;
-  --tab-h: 46px;
-  --sidebar-w: 280px;
+  --carrot:#E8622A; --carrot-deep:#C44B1A; --carrot-light:#F4924A;
+  --carrot-pale:#FDDBB8; --amber:#F5B942;
+  --sb-bg:#2A1005; --sb-mid:#6B3318; --sb-light:#A0582A;
+  --radius:12px;
+  --shadow:0 4px 20px rgba(30,10,0,.18);
+  --shadow-lg:0 12px 48px rgba(30,10,0,.32);
+  --nav-h:60px; --tab-h:46px; --sidebar-w:280px;
+  --transition:.3s ease;
 }
-
-/* ── DARK THEME (default) ── */
 [data-theme="dark"] {
-  --bg:          #1A0D05;
-  --bg-card:     #2C1206;
-  --bg-elevated: #3B1A08;
-  --surface:     #4A2210;
-  --border:      rgba(255,255,255,.08);
-  --border-mid:  rgba(255,255,255,.12);
-  --text-main:   #FFF0E6;
-  --text-muted:  #C4926A;
-  --text-faint:  #7A4830;
-  --nav-bg:      #2A1005;
-  --tab-bg:      #3B1A08;
-  --input-bg:    #3B1A08;
-  --input-border:#6B3318;
-  --hero-overlay:rgba(26,13,5,.5);
-  --chip-bg:     #3B1A08;
-  --chip-border: rgba(255,255,255,.08);
-  --chip-text:   #C4926A;
-  --empty-bg:    #2C1206;
-  --ann-text:    rgba(255,240,230,.65);
-  --scrolltop-shadow: 0 4px 16px rgba(232,98,42,.5);
-  --toggle-bg:   #4A2210;
+  --bg:#1A0D05; --bg-card:#2C1206; --bg-elevated:#3B1A08;
+  --border:rgba(255,255,255,.08); --border-mid:rgba(255,255,255,.13);
+  --text-main:#FFF0E6; --text-muted:#C4926A; --text-faint:#7A4830;
+  --nav-bg:#22100A; --tab-bg:#3B1A08; --input-bg:#3B1A08;
+  --chip-bg:#3B1A08; --chip-text:#C4926A;
+  --toggle-bg:#4A2210; --notif-bg:#2C1206;
+  --empty-bg:#2C1206;
 }
-
-/* ── LIGHT THEME ── */
 [data-theme="light"] {
-  --bg:          #FFF8F0;
-  --bg-card:     #FFFFFF;
-  --bg-elevated: #F5E6D0;
-  --surface:     #FFF8F0;
-  --border:      #F5E6D0;
-  --border-mid:  rgba(160,88,42,.15);
-  --text-main:   #2C1206;
-  --text-muted:  #7A4830;
-  --text-faint:  #B07A52;
-  --nav-bg:      #3B1A08;
-  --tab-bg:      #6B3318;
-  --input-bg:    #FFFFFF;
-  --input-border:#F5E6D0;
-  --hero-overlay:rgba(59,26,8,.3);
-  --chip-bg:     #FFFFFF;
-  --chip-border: #F5E6D0;
-  --chip-text:   #6B3318;
-  --empty-bg:    #FFFFFF;
-  --ann-text:    rgba(255,240,230,.65);
-  --scrolltop-shadow: 0 4px 16px rgba(232,98,42,.45);
-  --toggle-bg:   #F5E6D0;
+  --bg:#FFF8F0; --bg-card:#FFFFFF; --bg-elevated:#F5E6D0;
+  --border:#F0DCC8; --border-mid:rgba(160,88,42,.18);
+  --text-main:#2C1206; --text-muted:#7A4830; --text-faint:#B07A52;
+  --nav-bg:#3B1A08; --tab-bg:#6B3318; --input-bg:#FFFFFF;
+  --chip-bg:#FFFFFF; --chip-text:#6B3318;
+  --toggle-bg:#F0DCC8; --notif-bg:#FFFFFF;
+  --empty-bg:#FFFFFF;
 }
 
-/* ═══════════════════════════════════════════
-   RESET
-═══════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text-main);
-  min-height: 100dvh;
-  overflow-x: hidden;
-  transition: background .3s, color .3s;
-}
-a { text-decoration: none; color: inherit; }
-button { cursor: pointer; border: none; background: none; font-family: inherit; -webkit-tap-highlight-color: transparent; }
-input, select, textarea { font-family: inherit; }
-ul { list-style: none; }
+/* ═══════════════ RESET ═══════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-main);min-height:100dvh;overflow-x:hidden;transition:background var(--transition),color var(--transition);}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;border:none;background:none;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+ul{list-style:none;}
 
-/* ═══════════════════════════════════════════
-   OVERLAY
-═══════════════════════════════════════════ */
-#overlay {
-  position: fixed; inset: 0; z-index: 90;
-  background: rgba(10,4,0,.65);
-  opacity: 0; pointer-events: none;
-  transition: opacity .32s;
-  backdrop-filter: blur(3px);
-}
-#overlay.on { opacity: 1; pointer-events: all; }
+/* ═══════════════ SCREEN SYSTEM ═══════════════ */
+.screen{display:none;flex-direction:column;min-height:100dvh;}
+.screen.active{display:flex;}
+#screen-app{flex-direction:column;}
 
-/* ═══════════════════════════════════════════
-   SIDEBAR — always dark
-═══════════════════════════════════════════ */
-#sidebar {
-  position: fixed; top: 0;
-  left: calc(-1 * var(--sidebar-w) - 24px);
-  width: var(--sidebar-w); height: 100dvh;
-  background: var(--sb-bg); z-index: 100;
-  display: flex; flex-direction: column;
-  transition: left .36s cubic-bezier(.4,0,.2,1);
-  box-shadow: var(--shadow-lg);
-}
-#sidebar.open { left: 0; }
+/* ═══════════════ OVERLAY ═══════════════ */
+#overlay{position:fixed;inset:0;z-index:90;background:rgba(10,4,0,.65);opacity:0;pointer-events:none;transition:opacity .32s;backdrop-filter:blur(4px);}
+#overlay.on{opacity:1;pointer-events:all;}
 
-.sb-hdr {
-  padding: 22px 18px 15px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  display: flex; align-items: center; justify-content: space-between;
+/* ═══════════════ SIDEBAR ═══════════════ */
+#sidebar{
+  position:fixed;top:0;left:calc(-1 * var(--sidebar-w) - 24px);
+  width:var(--sidebar-w);height:100dvh;
+  background:var(--sb-bg);z-index:100;
+  display:flex;flex-direction:column;
+  transition:left .36s cubic-bezier(.4,0,.2,1);
+  box-shadow:var(--shadow-lg);
 }
-.sb-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 900; color: var(--amber); }
-.sb-logo em { color: var(--carrot-light); font-style: normal; }
-.sb-close {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: rgba(255,255,255,.08); color: var(--carrot-pale);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; transition: background .2s;
-}
-.sb-close:hover { background: var(--carrot); color: #fff; }
+#sidebar.open{left:0;}
+.sb-hdr{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;}
+.sb-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--amber);}
+.sb-logo em{color:var(--carrot-light);font-style:normal;}
+.sb-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--carrot-pale);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:background .2s;}
+.sb-close:hover{background:var(--carrot);color:#fff;}
+.sb-nav{flex:1;overflow-y:auto;padding:10px 0;scrollbar-width:none;}
+.sb-nav::-webkit-scrollbar{display:none;}
+.sb-lbl{font-size:.65rem;font-weight:700;letter-spacing:1.7px;text-transform:uppercase;color:var(--sb-light);padding:14px 20px 5px;}
+.sb-link{display:flex;align-items:center;gap:12px;padding:13px 20px;color:rgba(255,248,240,.75);font-size:.88rem;font-weight:500;border-left:3px solid transparent;transition:all .2s;cursor:pointer;width:100%;}
+.sb-link:hover,.sb-link.active{background:rgba(232,98,42,.14);color:var(--carrot-pale);border-left-color:var(--carrot);}
+.sb-ico{width:20px;text-align:center;font-size:1rem;flex-shrink:0;}
 
-.sb-nav { flex: 1; overflow-y: auto; padding: 12px 0; scrollbar-width: none; }
-.sb-nav::-webkit-scrollbar { display: none; }
-.sb-lbl {
-  font-size: .66rem; font-weight: 700; letter-spacing: 1.6px;
-  text-transform: uppercase; color: var(--sb-light);
-  padding: 14px 20px 5px;
-}
-.sb-link {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 20px;
-  color: rgba(255,248,240,.75);
-  font-size: .88rem; font-weight: 500;
-  border-left: 3px solid transparent;
-  transition: all .2s; cursor: pointer;
-}
-.sb-link:hover, .sb-link.active {
-  background: rgba(232,98,42,.15);
-  color: var(--carrot-pale);
-  border-left-color: var(--carrot);
-}
-.sb-ico { width: 19px; text-align: center; font-size: 1rem; flex-shrink: 0; }
-.sb-cat-btn {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 20px; color: rgba(255,248,240,.75);
-  font-size: .88rem; font-weight: 500;
-  border-left: 3px solid transparent;
-  transition: all .2s; cursor: pointer; width: 100%;
-}
-.sb-cat-btn:hover { background: rgba(232,98,42,.15); color: var(--carrot-pale); }
-.sb-arrow { margin-left: auto; font-size: .72rem; transition: transform .25s; }
-.sb-arrow.r { transform: rotate(90deg); }
-.sb-children { display: none; }
-.sb-children.on { display: block; }
-.sb-children .sb-link { padding-left: 50px; font-size: .83rem; color: rgba(255,248,240,.5); }
+/* ═══════════════ TOP NAV ═══════════════ */
+#topnav{position:sticky;top:0;z-index:80;height:var(--nav-h);background:var(--nav-bg);display:flex;align-items:center;padding:0 14px;gap:10px;box-shadow:0 2px 16px rgba(10,4,0,.35);flex-shrink:0;}
+.burger{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.08);color:var(--carrot-pale);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;flex-shrink:0;transition:background .2s;}
+.burger:hover,.burger:active{background:var(--carrot);}
+.burger span{display:block;width:18px;height:2px;background:currentColor;border-radius:2px;}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--amber);margin-right:auto;white-space:nowrap;}
+.nav-logo em{color:var(--carrot-light);font-style:normal;}
+.nav-search{display:flex;align-items:center;background:rgba(255,255,255,.08);border-radius:22px;padding:0 12px;gap:7px;height:36px;flex:1;max-width:210px;border:1px solid rgba(255,255,255,.06);transition:border-color .2s,background .2s;}
+.nav-search:focus-within{border-color:var(--carrot);background:rgba(255,255,255,.12);}
+.nav-search input{flex:1;background:none;border:none;outline:none;color:var(--carrot-pale);font-size:.82rem;min-width:0;}
+.nav-search input::placeholder{color:rgba(255,248,240,.35);}
+.nav-ico{position:relative;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--carrot-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.92rem;transition:background .2s;}
+.nav-ico:hover,.nav-ico:active{background:var(--carrot);color:#fff;}
+.nav-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--amber);border-radius:50%;border:2px solid var(--nav-bg);transition:opacity .3s;}
+.nav-dot.hidden{opacity:0;}
 
-/* ═══════════════════════════════════════════
-   TOP NAV
-═══════════════════════════════════════════ */
-#topnav {
-  position: sticky; top: 0; z-index: 80;
-  height: var(--nav-h); background: var(--nav-bg);
-  display: flex; align-items: center;
-  padding: 0 16px; gap: 12px;
-  box-shadow: 0 2px 18px rgba(10,4,0,.3);
-  flex-shrink: 0;
+/* ═══════════════ NOTIFICATION POPUP ═══════════════ */
+#notif-popup{
+  position:fixed;top:calc(var(--nav-h) + 8px);right:12px;
+  width:min(340px, calc(100vw - 24px));
+  background:var(--notif-bg);
+  border-radius:16px;
+  box-shadow:var(--shadow-lg);
+  border:1px solid var(--border-mid);
+  z-index:200;
+  opacity:0;pointer-events:none;
+  transform:translateY(-10px) scale(.97);
+  transition:opacity .22s,transform .22s;
 }
-.burger {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: rgba(255,255,255,.08); color: var(--carrot-pale);
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 5px; flex-shrink: 0; transition: background .2s;
-}
-.burger:hover, .burger:active { background: var(--carrot); }
-.burger span { display: block; width: 19px; height: 2px; background: currentColor; border-radius: 2px; }
-.nav-logo { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 900; color: var(--amber); margin-right: auto; white-space: nowrap; }
-.nav-logo em { color: var(--carrot-light); font-style: normal; }
-.nav-search {
-  display: flex; align-items: center;
-  background: rgba(255,255,255,.09); border-radius: 22px;
-  padding: 0 12px; gap: 7px; height: 36px;
-  flex: 1; max-width: 220px;
-  border: 1px solid rgba(255,255,255,.07);
-  transition: border-color .2s, background .2s;
-}
-.nav-search:focus-within { border-color: var(--carrot); background: rgba(255,255,255,.13); }
-.nav-search input { flex: 1; background: none; border: none; outline: none; color: var(--carrot-pale); font-size: .83rem; min-width: 0; }
-.nav-search input::placeholder { color: rgba(255,248,240,.37); }
-.nav-ico {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,.08); color: var(--carrot-pale);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; font-size: .94rem; transition: background .2s; position: relative;
-}
-.nav-ico:hover, .nav-ico:active { background: var(--carrot); color: #fff; }
-.nav-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--amber); border-radius: 50%; border: 2px solid var(--nav-bg); }
+#notif-popup.show{opacity:1;pointer-events:all;transform:none;}
+.np-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+.np-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--text-main);}
+.np-clear{font-size:.75rem;font-weight:600;color:var(--carrot);cursor:pointer;transition:color .2s;}
+.np-clear:hover{color:var(--carrot-deep);}
+.np-list{max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.np-item{display:flex;gap:12px;padding:13px 18px;border-bottom:1px solid var(--border);transition:background .2s;cursor:pointer;}
+.np-item:last-child{border-bottom:none;}
+.np-item:hover{background:rgba(232,98,42,.07);}
+.np-item.unread{background:rgba(232,98,42,.06);}
+.np-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--carrot);margin-top:6px;}
+.np-dot.read{background:transparent;border:1.5px solid var(--border-mid);}
+.np-body{flex:1;min-width:0;}
+.np-msg{font-size:.83rem;color:var(--text-main);line-height:1.45;margin-bottom:3px;}
+.np-time{font-size:.7rem;color:var(--text-muted);}
+.np-empty{padding:32px 18px;text-align:center;color:var(--text-muted);font-size:.85rem;}
+.np-empty .np-ei{font-size:2rem;display:block;margin-bottom:8px;}
+.np-footer{padding:11px 18px;border-top:1px solid var(--border);text-align:center;}
+.np-footer a{font-size:.78rem;font-weight:600;color:var(--carrot);}
 
-/* ═══════════════════════════════════════════
-   TAB BAR
-═══════════════════════════════════════════ */
-#tabbar {
-  background: var(--tab-bg);
-  display: flex; align-items: stretch;
-  border-bottom: 2px solid var(--border);
-  overflow-x: auto; scrollbar-width: none; flex-shrink: 0;
-}
-#tabbar::-webkit-scrollbar { display: none; }
-.tab-btn {
-  flex-shrink: 0; padding: 0 18px; height: var(--tab-h);
-  color: rgba(255,248,240,.48); font-size: .83rem; font-weight: 500;
-  border-bottom: 3px solid transparent; transition: all .2s; white-space: nowrap;
-}
-.tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); font-weight: 600; }
+/* ═══════════════ TAB BAR ═══════════════ */
+#tabbar{background:var(--tab-bg);display:flex;align-items:stretch;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
+#tabbar::-webkit-scrollbar{display:none;}
+.tab-btn{flex-shrink:0;padding:0 18px;height:var(--tab-h);color:rgba(255,248,240,.48);font-size:.83rem;font-weight:500;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab-btn.active{color:var(--amber);border-bottom-color:var(--amber);font-weight:600;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadeIn .25s ease;}
 
-/* ═══════════════════════════════════════════
-   MAIN SCROLL AREA
-═══════════════════════════════════════════ */
-#app-wrap { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
-#main-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
-#main { padding: 22px 16px 72px; max-width: 1100px; margin: 0 auto; }
+/* ═══════════════ SCROLL AREA ═══════════════ */
+#app-wrap{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+#main-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+#main{padding:0 0 72px;max-width:1100px;margin:0 auto;}
 
-/* ═══════════════════════════════════════════
-   HERO
-═══════════════════════════════════════════ */
-.hero {
-  position: relative; border-radius: 18px; overflow: hidden;
-  min-height: 300px; margin-bottom: 28px;
-  display: flex; align-items: flex-end;
-  box-shadow: var(--shadow-lg);
-  background: linear-gradient(135deg, #3B1A08 0%, #5A2510 55%, #C44B1A 100%);
-  animation: fadeUp .5s ease both;
+/* ═══════════════ HERO SLIDESHOW ═══════════════ */
+.hero-slider{position:relative;overflow:hidden;margin-bottom:0;border-radius:0;}
+.hero-track{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.hero-slide{
+  flex:0 0 100%;position:relative;min-height:300px;
+  display:flex;align-items:flex-end;
+  background:linear-gradient(135deg,#3B1A08 0%,#5A2510 55%,#C44B1A 100%);
 }
-.hero-pat {
-  position: absolute; inset: 0; opacity: .06;
-  background-image: repeating-linear-gradient(45deg, var(--amber) 0, var(--amber) 1px, transparent 0, transparent 50%);
-  background-size: 22px 22px;
-}
-.hero-glow {
-  position: absolute; top: -50px; right: -50px;
-  width: 300px; height: 300px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(232,98,42,.5), transparent 70%);
-  pointer-events: none;
-}
-.hero-body { position: relative; z-index: 2; padding: 28px 22px; }
-.hero-tag {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: var(--carrot); color: #fff;
-  font-size: .72rem; font-weight: 700; letter-spacing: .7px;
-  text-transform: uppercase; border-radius: 20px; padding: 4px 12px; margin-bottom: 13px;
-}
-.hero h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.5rem, 5.5vw, 2.5rem); font-weight: 900;
-  color: #FFF0E6; line-height: 1.15; margin-bottom: 10px;
-}
-.hero p { color: rgba(255,240,230,.68); font-size: .88rem; line-height: 1.6; margin-bottom: 18px; max-width: 420px; }
-.hero-acts { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-pri {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: var(--carrot); color: #fff; padding: 11px 20px;
-  border-radius: 28px; font-weight: 600; font-size: .87rem;
-  box-shadow: 0 4px 16px rgba(232,98,42,.5); transition: all .22s;
-}
-.btn-pri:hover, .btn-pri:active { background: var(--carrot-deep); transform: translateY(-1px); }
-.btn-out {
-  display: inline-flex; align-items: center; gap: 7px;
-  border: 1px solid rgba(255,240,230,.3); color: #FFF0E6;
-  padding: 11px 18px; border-radius: 28px; font-weight: 500; font-size: .87rem; transition: all .22s;
-}
-.btn-out:hover, .btn-out:active { background: rgba(255,240,230,.1); }
+.slide-pat{position:absolute;inset:0;opacity:.06;background-image:repeating-linear-gradient(45deg,var(--amber) 0,var(--amber) 1px,transparent 0,transparent 50%);background-size:22px 22px;}
+.slide-glow{position:absolute;top:-40px;right:-40px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(232,98,42,.5),transparent 70%);pointer-events:none;}
+.slide-body{position:relative;z-index:2;padding:28px 22px 26px;width:100%;}
+.slide-tag{display:inline-flex;align-items:center;gap:5px;background:var(--carrot);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.7px;text-transform:uppercase;border-radius:20px;padding:4px 12px;margin-bottom:11px;}
+.slide-body h1{font-family:'Playfair Display',serif;font-size:clamp(1.45rem,5vw,2.4rem);font-weight:900;color:#FFF0E6;line-height:1.15;margin-bottom:9px;}
+.slide-body p{color:rgba(255,240,230,.65);font-size:.85rem;line-height:1.58;margin-bottom:16px;max-width:420px;}
+.slide-acts{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-pri{display:inline-flex;align-items:center;gap:7px;background:var(--carrot);color:#fff;padding:10px 18px;border-radius:26px;font-weight:600;font-size:.85rem;box-shadow:0 4px 14px rgba(232,98,42,.45);transition:all .22s;}
+.btn-pri:hover,.btn-pri:active{background:var(--carrot-deep);transform:translateY(-1px);}
+.btn-out{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,240,230,.28);color:#FFF0E6;padding:10px 16px;border-radius:26px;font-weight:500;font-size:.85rem;transition:all .22s;}
+.btn-out:hover,.btn-out:active{background:rgba(255,240,230,.1);}
 
-/* ═══════════════════════════════════════════
-   STATS
-═══════════════════════════════════════════ */
-.stats {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 10px; margin-bottom: 26px;
-  animation: fadeUp .5s .1s ease both;
-}
-.stat {
-  background: var(--bg-card); border-radius: var(--radius);
-  padding: 16px 10px; text-align: center;
-  box-shadow: var(--shadow); border-top: 3px solid var(--carrot);
-  transition: background .3s;
-}
-.stat-v { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; color: var(--text-main); }
-.stat-l { font-size: .67rem; color: var(--text-muted); margin-top: 2px; }
+/* Slider dots */
+.hero-dots{position:absolute;bottom:12px;right:16px;display:flex;gap:6px;z-index:3;}
+.hero-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);transition:all .3s;cursor:pointer;border:none;}
+.hero-dot.active{background:#fff;width:20px;border-radius:4px;}
 
-/* ═══════════════════════════════════════════
-   SECTION HEADERS
-═══════════════════════════════════════════ */
-.sec-hdr {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 15px; padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
-.sec-ttl { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--text-main); }
-.sec-ttl span { color: var(--carrot); }
-.see-all { font-size: .79rem; font-weight: 600; color: var(--carrot); }
+/* Progress bar */
+.hero-progress{position:absolute;bottom:0;left:0;height:3px;background:rgba(232,98,42,.7);z-index:3;transition:width 5s linear;}
 
-/* ═══════════════════════════════════════════
-   GENRE CHIPS
-═══════════════════════════════════════════ */
-.genre-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 8px; margin-bottom: 28px;
-}
-.gc {
-  background: var(--chip-bg); border: 1.5px solid var(--chip-border);
-  border-radius: 10px; padding: 11px 8px; text-align: center;
-  font-size: .74rem; font-weight: 600; color: var(--chip-text);
-  cursor: pointer; transition: all .2s; box-shadow: var(--shadow);
-}
-.gc:active, .gc.active {
-  background: var(--carrot); color: #fff; border-color: var(--carrot);
-  transform: translateY(-2px); box-shadow: 0 5px 14px rgba(232,98,42,.35);
-}
-.gc .ge { font-size: 1.25rem; display: block; margin-bottom: 4px; }
+/* ═══════════════ SECTION PADDING ═══════════════ */
+.section-pad{padding:0 16px;}
 
-/* ═══════════════════════════════════════════
-   CAROUSEL / NOVEL CARDS
-═══════════════════════════════════════════ */
-.cw { margin-bottom: 28px; animation: fadeUp .5s .2s ease both; }
-.carousel {
-  display: flex; gap: 13px; overflow-x: auto;
-  scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 2px;
-}
-.carousel::-webkit-scrollbar { display: none; }
-.nc {
-  flex: 0 0 148px; scroll-snap-align: start;
-  border-radius: var(--radius); overflow: hidden;
-  background: var(--bg-card); box-shadow: var(--shadow);
-  transition: transform .22s, box-shadow .22s, background .3s;
-}
-.nc:active { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-.nc-cov { height: 200px; position: relative; overflow: hidden; }
-.nc-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.8rem; }
-.nc-b {
-  position: absolute; top: 7px; left: 7px;
-  background: var(--carrot); color: #fff;
-  font-size: .62rem; font-weight: 700; letter-spacing: .4px;
-  text-transform: uppercase; border-radius: 6px; padding: 2px 7px;
-}
-.nc-b.hot { background: #E84242; }
-.nc-b.amb { background: var(--amber); color: var(--sb-bg); }
-.nc-inf { padding: 10px; }
-.nc-t {
-  font-family: 'DM Serif Display', serif; font-size: .84rem; color: var(--text-main);
-  line-height: 1.3; margin-bottom: 4px;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
-.nc-m { display: flex; align-items: center; gap: 5px; font-size: .7rem; color: var(--text-muted); }
-.nc-s { color: var(--amber); }
-.nc.ph { opacity: .4; filter: grayscale(.6); }
+/* ═══════════════ SECTION HEADERS ═══════════════ */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.sec-ttl{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--text-main);}
+.sec-ttl span{color:var(--carrot);}
+.see-all{font-size:.78rem;font-weight:600;color:var(--carrot);}
 
-/* ═══════════════════════════════════════════
-   LIST CARD
-═══════════════════════════════════════════ */
-.lc {
-  display: flex; gap: 12px; align-items: flex-start;
-  background: var(--bg-card); border-radius: var(--radius);
-  padding: 13px; box-shadow: var(--shadow); margin-bottom: 10px;
-  transition: transform .2s, background .3s;
-}
-.lc:active { transform: translateX(3px); }
-.lc-cov {
-  flex: 0 0 62px; height: 82px; border-radius: 8px;
-  background: var(--bg-elevated);
-  display: flex; align-items: center; justify-content: center; font-size: 1.9rem;
-}
-.lc-bd { flex: 1; min-width: 0; }
-.lc-t { font-family: 'DM Serif Display', serif; font-size: .9rem; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.lc-d { font-size: .76rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 7px; }
-.tags { display: flex; gap: 5px; flex-wrap: wrap; }
-.tag { background: var(--bg-elevated); color: var(--text-muted); font-size: .68rem; font-weight: 600; border-radius: 20px; padding: 2px 9px; border: 1px solid var(--border-mid); }
-.tag.o { background: rgba(232,98,42,.15); color: var(--carrot-light); border-color: rgba(232,98,42,.25); }
+/* ═══════════════ CAROUSEL / NOVEL CARDS ═══════════════ */
+.cw{margin-bottom:8px;}
+.carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 16px 4px;}
+.carousel::-webkit-scrollbar{display:none;}
+.nc{flex:0 0 145px;scroll-snap-align:start;border-radius:var(--radius);overflow:hidden;background:var(--bg-card);box-shadow:var(--shadow);transition:transform .22s,box-shadow .22s,background var(--transition);}
+.nc:active{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.nc-cov{height:198px;position:relative;overflow:hidden;}
+.nc-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.7rem;}
+.nc-b{position:absolute;top:7px;left:7px;color:#fff;font-size:.61rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;border-radius:6px;padding:2px 7px;}
+.nc-b.hot{background:#E84242;}
+.nc-b.new{background:var(--carrot);}
+.nc-b.ph{background:#666;}
+.nc-inf{padding:10px;}
+.nc-t{font-family:'DM Serif Display',serif;font-size:.83rem;color:var(--text-main);line-height:1.3;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.nc-m{display:flex;align-items:center;gap:5px;font-size:.69rem;color:var(--text-muted);}
+.nc-s{color:var(--amber);}
+.nc.ph{opacity:.38;filter:grayscale(.7);}
 
-/* ═══════════════════════════════════════════
-   ANNOUNCEMENT CARD
-═══════════════════════════════════════════ */
-.ann {
-  background: linear-gradient(135deg, #3B1A08 0%, #6B3318 100%);
-  border-radius: var(--radius); padding: 18px 20px;
-  margin-bottom: 10px; position: relative; overflow: hidden; box-shadow: var(--shadow);
-}
-.ann::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--amber); }
-.ann-date { font-size: .7rem; color: var(--amber); font-weight: 600; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 5px; }
-.ann h3 { font-family: 'Playfair Display', serif; font-size: .97rem; color: #FFF0E6; margin-bottom: 5px; }
-.ann p { font-size: .8rem; color: var(--ann-text); line-height: 1.55; }
-.ann-tp { position: absolute; top: 12px; right: 14px; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; border-radius: 20px; padding: 2px 9px; }
-.ann-tp.new  { background: rgba(232,98,42,.25); color: var(--carrot-light); }
-.ann-tp.event { background: rgba(245,185,66,.25); color: var(--amber); }
-.ann-tp.system { background: rgba(255,255,255,.12); color: rgba(255,240,230,.7); }
+/* ═══════════════ SUBCATEGORY TABS ═══════════════ */
+.sub-tabs-wrap{overflow-x:auto;scrollbar-width:none;margin-bottom:16px;}
+.sub-tabs-wrap::-webkit-scrollbar{display:none;}
+.sub-tabs{display:flex;gap:8px;padding:0 16px;}
+.sub-tab{flex-shrink:0;padding:8px 18px;border-radius:24px;font-size:.82rem;font-weight:600;color:var(--text-muted);background:var(--bg-card);border:1.5px solid var(--border);transition:all .22s;cursor:pointer;}
+.sub-tab:active,.sub-tab.active{background:var(--carrot);color:#fff;border-color:var(--carrot);box-shadow:0 4px 14px rgba(232,98,42,.35);}
+.sub-panel{display:none;}
+.sub-panel.active{display:block;}
 
-/* ═══════════════════════════════════════════
-   UPDATE ITEM
-═══════════════════════════════════════════ */
-.upd {
-  display: flex; gap: 12px; padding: 13px;
-  background: var(--bg-card); border-radius: var(--radius);
-  margin-bottom: 9px; box-shadow: var(--shadow); align-items: center;
-  transition: transform .2s, background .3s;
-}
-.upd:active { transform: translateX(3px); }
-.upd-ico { flex: 0 0 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--carrot), var(--amber)); color: #fff; font-weight: 700; font-size: .82rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.upd-bd { flex: 1; min-width: 0; }
-.upd-t { font-weight: 600; font-size: .87rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.upd-s { font-size: .73rem; color: var(--text-muted); margin-top: 2px; }
-.upd-tm { font-size: .7rem; color: var(--text-muted); white-space: nowrap; }
-.np { background: var(--carrot); color: #fff; font-size: .62rem; font-weight: 700; border-radius: 20px; padding: 1px 7px; white-space: nowrap; margin-left: 5px; }
+/* ═══════════════ LIST CARD ═══════════════ */
+.lc{display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border-radius:var(--radius);padding:13px 16px;box-shadow:var(--shadow);margin-bottom:10px;transition:transform .2s,background var(--transition);}
+.lc:active{transform:translateX(3px);}
+.lc-cov{flex:0 0 60px;height:80px;border-radius:8px;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:1.85rem;}
+.lc-bd{flex:1;min-width:0;}
+.lc-t{font-family:'DM Serif Display',serif;font-size:.88rem;color:var(--text-main);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lc-d{font-size:.75rem;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px;}
+.tags{display:flex;gap:5px;flex-wrap:wrap;}
+.tag{background:var(--bg-elevated);color:var(--text-muted);font-size:.67rem;font-weight:600;border-radius:20px;padding:2px 9px;border:1px solid var(--border-mid);}
+.tag.o{background:rgba(232,98,42,.14);color:var(--carrot-light);border-color:rgba(232,98,42,.22);}
 
-/* ═══════════════════════════════════════════
-   EMPTY STATE
-═══════════════════════════════════════════ */
-.empty {
-  text-align: center; padding: 40px 16px;
-  background: var(--empty-bg); border-radius: var(--radius);
-  box-shadow: var(--shadow); margin-bottom: 20px;
-  transition: background .3s;
-}
-.empty-i { font-size: 3rem; margin-bottom: 11px; }
-.empty h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--text-main); margin-bottom: 7px; }
-.empty p { font-size: .82rem; color: var(--text-muted); line-height: 1.6; max-width: 300px; margin: 0 auto 12px; }
-.empty code { display: block; background: var(--bg-elevated); border-radius: 8px; padding: 9px 13px; font-size: .72rem; color: var(--text-muted); text-align: left; word-break: break-all; line-height: 1.55; }
+/* ═══════════════ ANNOUNCEMENT CARD ═══════════════ */
+.ann{background:linear-gradient(135deg,#3B1A08 0%,#6B3318 100%);border-radius:var(--radius);padding:17px 18px;margin:0 16px 10px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.ann::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--amber);}
+.ann-date{font-size:.69rem;color:var(--amber);font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px;}
+.ann h3{font-family:'Playfair Display',serif;font-size:.95rem;color:#FFF0E6;margin-bottom:5px;}
+.ann p{font-size:.79rem;color:rgba(255,240,230,.62);line-height:1.55;}
+.ann-tp{position:absolute;top:12px;right:13px;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;border-radius:20px;padding:2px 9px;}
+.ann-tp.new{background:rgba(232,98,42,.22);color:var(--carrot-light);}
+.ann-tp.event{background:rgba(245,185,66,.22);color:var(--amber);}
+.ann-tp.system{background:rgba(255,255,255,.1);color:rgba(255,240,230,.7);}
 
-/* ═══════════════════════════════════════════
-   TAB PANELS
-═══════════════════════════════════════════ */
-.tab-panel { display: none; }
-.tab-panel.active { display: block; animation: fadeIn .25s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* ═══════════════ UPDATE ITEM ═══════════════ */
+.upd{display:flex;gap:12px;padding:13px 16px;background:var(--bg-card);border-radius:var(--radius);margin:0 16px 9px;box-shadow:var(--shadow);align-items:center;transition:transform .2s,background var(--transition);}
+.upd:active{transform:translateX(3px);}
+.upd-ico{flex:0 0 34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--carrot),var(--amber));color:#fff;font-weight:700;font-size:.82rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.upd-bd{flex:1;min-width:0;}
+.upd-t{font-weight:600;font-size:.86rem;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.upd-s{font-size:.72rem;color:var(--text-muted);margin-top:2px;}
+.upd-tm{font-size:.69rem;color:var(--text-muted);white-space:nowrap;}
+.np-pill{background:var(--carrot);color:#fff;font-size:.61rem;font-weight:700;border-radius:20px;padding:1px 7px;white-space:nowrap;margin-left:5px;}
 
-/* ═══════════════════════════════════════════
-   SETTINGS SCREEN
-═══════════════════════════════════════════ */
-#screen-settings { display: none; flex-direction: column; min-height: 100dvh; }
-#screen-settings.active { display: flex; }
-.page-nav {
-  height: var(--nav-h); background: var(--nav-bg);
-  display: flex; align-items: center; padding: 0 16px; gap: 12px;
-  box-shadow: 0 2px 18px rgba(10,4,0,.3);
-  flex-shrink: 0; position: sticky; top: 0; z-index: 80;
-}
-.back-btn { color: rgba(255,248,240,.7); font-size: .87rem; display: flex; align-items: center; gap: 5px; font-weight: 500; transition: color .2s; }
-.back-btn:hover { color: var(--amber); }
-.page-nav-t { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--amber); }
-.page-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.page-body { max-width: 560px; margin: 0 auto; padding: 26px 16px 72px; }
-.page-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 900; color: var(--text-main); margin-bottom: 4px; transition: color .3s; }
-.page-sub { color: var(--text-muted); font-size: .83rem; margin-bottom: 26px; }
+/* ═══════════════ EMPTY STATE ═══════════════ */
+.empty{text-align:center;padding:36px 16px;background:var(--empty-bg);border-radius:var(--radius);box-shadow:var(--shadow);margin:0 16px 20px;transition:background var(--transition);}
+.empty-i{font-size:2.8rem;margin-bottom:10px;}
+.empty h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--text-main);margin-bottom:6px;}
+.empty p{font-size:.81rem;color:var(--text-muted);line-height:1.6;max-width:290px;margin:0 auto 11px;}
+.empty code{display:block;background:var(--bg-elevated);border-radius:8px;padding:9px 13px;font-size:.71rem;color:var(--text-muted);text-align:left;word-break:break-all;line-height:1.55;}
 
-.sc { background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; transition: background .3s; }
-.sc-hdr { padding: 15px 20px 11px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 9px; }
-.sc-hdr h2 { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--text-main); transition: color .3s; }
-.sc-body { padding: 18px 20px; }
+/* ═══════════════ SECTION SPACING ═══════════════ */
+.sec-block{margin-top:26px;}
+.sec-hdr.padded{padding-left:16px;padding-right:16px;}
 
-/* ── Theme Toggle ── */
-.theme-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 4px 0;
-}
-.theme-row-left { display: flex; align-items: center; gap: 12px; }
-.theme-icon { font-size: 1.3rem; }
-.theme-label { font-size: .9rem; font-weight: 600; color: var(--text-main); }
-.theme-sublabel { font-size: .74rem; color: var(--text-muted); margin-top: 1px; }
+/* ═══════════════ SETTINGS SCREEN ═══════════════ */
+.page-nav{height:var(--nav-h);background:var(--nav-bg);display:flex;align-items:center;padding:0 16px;gap:12px;box-shadow:0 2px 16px rgba(10,4,0,.3);flex-shrink:0;}
+.back-btn{color:rgba(255,248,240,.7);font-size:.87rem;display:flex;align-items:center;gap:5px;font-weight:500;transition:color .2s;}
+.back-btn:hover{color:var(--amber);}
+.page-nav-t{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--amber);}
+.page-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.page-body{max-width:560px;margin:0 auto;padding:24px 16px 72px;}
+.page-title{font-family:'Playfair Display',serif;font-size:1.65rem;font-weight:900;color:var(--text-main);margin-bottom:4px;transition:color var(--transition);}
+.page-sub{color:var(--text-muted);font-size:.82rem;margin-bottom:24px;}
+.sc{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden;transition:background var(--transition);}
+.sc-hdr{padding:14px 20px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;}
+.sc-hdr h2{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--text-main);transition:color var(--transition);}
+.sc-body{padding:18px 20px;}
 
-/* Toggle switch */
-.toggle-wrap { position: relative; width: 52px; height: 28px; flex-shrink: 0; }
-.toggle-wrap input { opacity: 0; width: 0; height: 0; position: absolute; }
-.toggle-track {
-  position: absolute; inset: 0; border-radius: 28px;
-  background: var(--toggle-bg); cursor: pointer;
-  transition: background .3s; border: 1.5px solid var(--border-mid);
-}
-.toggle-wrap input:checked + .toggle-track { background: var(--carrot); border-color: var(--carrot); }
-.toggle-track::after {
-  content: ''; position: absolute;
-  top: 3px; left: 3px;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: #fff; transition: transform .3s;
-  box-shadow: 0 1px 4px rgba(0,0,0,.25);
-}
-.toggle-wrap input:checked + .toggle-track::after { transform: translateX(24px); }
+/* Theme toggle */
+.theme-row{display:flex;align-items:center;justify-content:space-between;padding:2px 0;}
+.theme-row-l{display:flex;align-items:center;gap:12px;}
+.theme-icon{font-size:1.3rem;}
+.theme-lbl{font-size:.9rem;font-weight:600;color:var(--text-main);}
+.theme-sub{font-size:.73rem;color:var(--text-muted);margin-top:1px;}
+.toggle-wrap{position:relative;width:52px;height:28px;flex-shrink:0;}
+.toggle-wrap input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-track{position:absolute;inset:0;border-radius:28px;background:var(--toggle-bg);cursor:pointer;transition:background .3s;border:1.5px solid var(--border-mid);}
+.toggle-wrap input:checked + .toggle-track{background:var(--carrot);border-color:var(--carrot);}
+.toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.25);}
+.toggle-wrap input:checked + .toggle-track::after{transform:translateX(24px);}
+.theme-options{display:flex;gap:10px;margin-top:18px;}
+.theme-opt{flex:1;border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;border:2px solid var(--border);transition:all .22s;background:var(--bg-elevated);}
+.theme-opt.active{border-color:var(--carrot);box-shadow:0 0 0 3px rgba(232,98,42,.14);}
+.theme-opt .oi{font-size:1.55rem;margin-bottom:6px;}
+.theme-opt .ol{font-size:.79rem;font-weight:600;color:var(--text-muted);}
+.theme-opt.active .ol{color:var(--carrot);}
 
-.theme-options { display: flex; gap: 10px; margin-top: 18px; }
-.theme-opt {
-  flex: 1; border-radius: 10px; padding: 14px 10px;
-  text-align: center; cursor: pointer;
-  border: 2px solid var(--border); transition: all .22s;
-  background: var(--bg-elevated);
-}
-.theme-opt.active { border-color: var(--carrot); box-shadow: 0 0 0 3px rgba(232,98,42,.15); }
-.theme-opt .opt-icon { font-size: 1.6rem; margin-bottom: 6px; }
-.theme-opt .opt-label { font-size: .8rem; font-weight: 600; color: var(--text-muted); }
-.theme-opt.active .opt-label { color: var(--carrot); }
+/* ═══════════════ ABOUT SCREEN ═══════════════ */
+.about-hero{background:linear-gradient(135deg,#3B1A08 0%,#6B3318 100%);padding:44px 20px;text-align:center;position:relative;overflow:hidden;}
+.about-hero::before{content:'';position:absolute;inset:0;opacity:.06;background-image:repeating-linear-gradient(45deg,var(--amber) 0,var(--amber) 1px,transparent 0,transparent 50%);background-size:22px 22px;}
+.about-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,6vw,2.8rem);font-weight:900;color:var(--amber);position:relative;z-index:1;}
+.about-hero p{color:rgba(255,240,230,.6);font-size:.9rem;max-width:420px;margin:10px auto 0;line-height:1.7;position:relative;z-index:1;}
+.ab-sec{margin-bottom:28px;}
+.ab-sec h2{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--text-main);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--border);transition:color var(--transition);}
+.ab-sec h2 span{color:var(--carrot);}
+.ab-sec p{color:var(--text-muted);line-height:1.8;margin-bottom:10px;font-size:.87rem;}
+.vg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px;}
+.vc{background:var(--bg-card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);border-top:3px solid var(--carrot);text-align:center;transition:background var(--transition);}
+.vc .vi{font-size:1.6rem;margin-bottom:6px;}
+.vc h3{font-weight:700;color:var(--text-main);margin-bottom:4px;font-size:.84rem;transition:color var(--transition);}
+.vc p{font-size:.72rem;color:var(--text-muted);line-height:1.5;margin:0;}
 
-/* ═══════════════════════════════════════════
-   ABOUT SCREEN
-═══════════════════════════════════════════ */
-#screen-about { display: none; flex-direction: column; min-height: 100dvh; }
-#screen-about.active { display: flex; }
-.about-hero {
-  background: linear-gradient(135deg, #3B1A08 0%, #6B3318 100%);
-  padding: 44px 20px; text-align: center; position: relative; overflow: hidden;
-}
-.about-hero::before { content: ''; position: absolute; inset: 0; opacity: .06; background-image: repeating-linear-gradient(45deg, var(--amber) 0, var(--amber) 1px, transparent 0, transparent 50%); background-size: 22px 22px; }
-.about-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,6vw,2.8rem); font-weight: 900; color: var(--amber); position: relative; z-index: 1; }
-.about-hero p { color: rgba(255,240,230,.6); font-size: .9rem; max-width: 420px; margin: 10px auto 0; line-height: 1.7; position: relative; z-index: 1; }
-.ab-sec { margin-bottom: 30px; }
-.ab-sec h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin-bottom: 11px; padding-bottom: 9px; border-bottom: 2px solid var(--border); transition: color .3s; }
-.ab-sec h2 span { color: var(--carrot); }
-.ab-sec p { color: var(--text-muted); line-height: 1.8; margin-bottom: 10px; font-size: .87rem; }
-.vg { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 11px; margin-top: 13px; }
-.vc { background: var(--bg-card); border-radius: var(--radius); padding: 15px; box-shadow: var(--shadow); border-top: 3px solid var(--carrot); text-align: center; transition: background .3s; }
-.vc .vi { font-size: 1.7rem; margin-bottom: 7px; }
-.vc h3 { font-weight: 700; color: var(--text-main); margin-bottom: 4px; font-size: .86rem; transition: color .3s; }
-.vc p { font-size: .74rem; color: var(--text-muted); line-height: 1.55; margin: 0; }
+/* ═══════════════ FOOTER ═══════════════ */
+footer{background:#22100A;color:rgba(255,240,230,.38);padding:24px 16px;text-align:center;font-size:.74rem;line-height:1.8;}
+footer strong{color:var(--amber);}
 
-/* ═══════════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════════ */
-footer {
-  background: #2A1005;
-  color: rgba(255,240,230,.4);
-  padding: 26px 16px; text-align: center; font-size: .75rem; line-height: 1.8;
-}
-footer strong { color: var(--amber); }
+/* ═══════════════ SCROLL TOP ═══════════════ */
+#scrolltop{position:fixed;bottom:24px;right:16px;width:44px;height:44px;border-radius:50%;background:var(--carrot);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(232,98,42,.5);z-index:70;font-size:1.1rem;opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .28s,transform .28s;}
+#scrolltop.on{opacity:1;pointer-events:all;transform:none;}
+#scrolltop:active{background:var(--carrot-deep);}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#3B1A08;color:#FFF0E6;padding:11px 20px;border-radius:30px;font-size:.82rem;font-weight:500;box-shadow:0 8px 28px rgba(0,0,0,.35);z-index:300;opacity:0;pointer-events:none;transition:all .3s;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* ═══════════════════════════════════════════
-   SCROLL TOP
-═══════════════════════════════════════════ */
-#scrolltop {
-  position: fixed; bottom: 24px; right: 16px;
-  width: 44px; height: 44px; border-radius: 50%;
-  background: var(--carrot); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: var(--scrolltop-shadow); z-index: 70; font-size: 1.1rem;
-  opacity: 0; pointer-events: none; transform: translateY(14px);
-  transition: opacity .28s, transform .28s;
-}
-#scrolltop.on { opacity: 1; pointer-events: all; transform: none; }
-#scrolltop:active { background: var(--carrot-deep); }
+/* ═══════════════ ANIMATIONS ═══════════════ */
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.hero-slider{animation:fadeUp .5s ease both;}
 
-/* TOAST */
-#toast {
-  position: fixed; bottom: 80px; left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: #3B1A08; color: #FFF0E6;
-  padding: 11px 20px; border-radius: 30px; font-size: .83rem; font-weight: 500;
-  box-shadow: 0 8px 28px rgba(0,0,0,.35); z-index: 200;
-  opacity: 0; pointer-events: none; transition: all .3s; white-space: nowrap;
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media(min-width:600px){
+  #main{padding:0 0 80px;}
+  .nc{flex-basis:162px;} .nc-cov{height:220px;}
 }
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* ANIMATIONS */
-@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-
-/* ═══════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════ */
-@media (min-width: 600px) {
-  #main { padding: 28px 24px 80px; }
-  .nc { flex-basis: 166px; }
-  .nc-cov { height: 226px; }
-  .genre-grid { grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); }
+@media(min-width:900px){
+  .nav-search{max-width:290px;}
+  .carousel{padding:0 32px 4px;}
+  .sec-hdr.padded,.ann,.upd,.empty{padding-left:32px;padding-right:32px;}
+  .sub-tabs{padding:0 32px;}
 }
-@media (min-width: 900px) {
-  #main { padding: 32px 40px 100px; }
-  .nav-search { max-width: 300px; }
-}
-@media (max-width: 360px) {
-  .nav-search { display: none; }
-  .genre-grid { grid-template-columns: repeat(3,1fr); }
-  .tab-btn { padding: 0 12px; font-size: .79rem; }
+@media(max-width:360px){
+  .nav-search{display:none;}
+  .tab-btn{padding:0 12px;font-size:.78rem;}
 }
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════
-     OVERLAY
-════════════════════════════════ -->
 <div id="overlay" onclick="closeSB()"></div>
 
-<!-- ════════════════════════════════
-     SIDEBAR
-════════════════════════════════ -->
+<!-- ══════════ SIDEBAR ══════════ -->
 <nav id="sidebar">
   <div class="sb-hdr">
     <span class="sb-logo">📖 Novél<em>ore</em></span>
-    <button class="sb-close" onclick="closeSB()" aria-label="Close menu">✕</button>
+    <button class="sb-close" onclick="closeSB()">✕</button>
   </div>
-
   <div class="sb-nav">
-    <div class="sb-lbl">Menu</div>
-    <div class="sb-link active" onclick="goHome()">
+    <div class="sb-lbl">Navigate</div>
+    <button class="sb-link active" onclick="goHome()">
       <span class="sb-ico">🏠</span> Home
-    </div>
-
-    <button class="sb-cat-btn" onclick="toggleCat(this)">
-      <span class="sb-ico">📂</span> Categories
-      <span class="sb-arrow">▶</span>
     </button>
-    <div class="sb-children" id="sb-cat">
-      <div class="sb-link" onclick="closeSB()"><span class="sb-ico">🎞️</span> Animation</div>
-      <div class="sb-link" onclick="closeSB()"><span class="sb-ico">📚</span> Comics</div>
-      <div class="sb-link" onclick="closeSB()"><span class="sb-ico">✍️</span> Novel Story</div>
-    </div>
-
-    <div class="sb-lbl">Site</div>
-    <div class="sb-link" onclick="goSettings()">
+    <button class="sb-link" onclick="goSettings()">
       <span class="sb-ico">⚙️</span> Settings
-    </div>
-    <div class="sb-link" onclick="goAbout()">
+    </button>
+    <button class="sb-link" onclick="goAbout()">
       <span class="sb-ico">ℹ️</span> About Us
-    </div>
+    </button>
   </div>
 </nav>
 
-<!-- ════════════════════════════════
-     MAIN APP
-════════════════════════════════ -->
-<div id="screen-app">
+<!-- ══════════ NOTIFICATION POPUP ══════════ -->
+<div id="notif-popup">
+  <div class="np-hdr">
+    <span class="np-title">🔔 Notifications</span>
+    <span class="np-clear" onclick="clearNotifs()">Mark all read</span>
+  </div>
+  <div class="np-list" id="np-list"></div>
+  <div class="np-footer"><a href="#">View all notifications</a></div>
+</div>
 
-  <!-- Top Nav -->
+<!-- ══════════ MAIN APP SCREEN ══════════ -->
+<div id="screen-app" class="screen active">
+
   <header id="topnav">
-    <button class="burger" onclick="openSB()" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="burger" onclick="openSB()"><span></span><span></span><span></span></button>
     <span class="nav-logo">Novél<em>ore</em></span>
-    <label class="nav-search" aria-label="Search">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
+    <label class="nav-search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="search" placeholder="Search novels…"/>
     </label>
-    <button class="nav-ico" aria-label="Notifications">🔔<span class="nav-dot"></span></button>
-    <button class="nav-ico" onclick="goSettings()" aria-label="Settings">⚙️</button>
+    <button class="nav-ico" id="notif-btn" onclick="toggleNotif()" aria-label="Notifications">
+      🔔
+      <span class="nav-dot" id="notif-dot"></span>
+    </button>
   </header>
 
-  <!-- Tab Bar -->
-  <div id="tabbar" role="tablist">
-    <button class="tab-btn active" role="tab" onclick="swTab('home',this)">🏠 Home</button>
-    <button class="tab-btn" role="tab" onclick="swTab('new',this)">✨ What's New</button>
-    <button class="tab-btn" role="tab" onclick="swTab('updates',this)">🔄 Updates</button>
-    <button class="tab-btn" role="tab" onclick="swTab('announce',this)">📢 Announce</button>
+  <div id="tabbar">
+    <button class="tab-btn active" onclick="swTab('home',this)">🏠 Home</button>
+    <button class="tab-btn" onclick="swTab('new',this)">✨ What's New</button>
+    <button class="tab-btn" onclick="swTab('updates',this)">🔄 Updates</button>
+    <button class="tab-btn" onclick="swTab('announce',this)">📢 Announce</button>
   </div>
 
-  <!-- Scroll Area -->
   <div id="app-wrap">
     <div id="main-scroll">
       <main id="main">
 
-        <!-- ════ HOME ════ -->
+        <!-- ════ HOME TAB ════ -->
         <div class="tab-panel active" id="panel-home">
 
-          <!-- Hero -->
-          <div class="hero" id="hero-el">
-            <div class="hero-pat"></div>
-            <div class="hero-glow"></div>
-            <div class="hero-body">
-              <div class="hero-tag">🔥 Featured This Week</div>
-              <h1 id="hero-ttl">Your Featured Novel Title</h1>
-              <p id="hero-dsc">Edit the <strong style="color:var(--amber)">heroData</strong> object in the &lt;script&gt; section to set your featured novel.</p>
-              <div class="hero-acts">
-                <a class="btn-pri" href="#">▶ Read Now</a>
-                <a class="btn-out" href="#">+ Bookmark</a>
+          <!-- AUTO-SCROLL HERO SLIDER -->
+          <div class="hero-slider" id="hero-slider">
+            <div class="hero-track" id="hero-track">
+              <!-- Slides rendered by JS from heroSlides[] -->
+            </div>
+            <div class="hero-dots" id="hero-dots"></div>
+            <div class="hero-progress" id="hero-progress"></div>
+          </div>
+
+          <!-- TRENDING + SUBCATEGORY TABS -->
+          <div class="sec-block">
+            <div class="sec-hdr padded" style="margin-top:24px;">
+              <h2 class="sec-ttl">🔥 <span>Trending</span></h2>
+              <a class="see-all" href="#">See all →</a>
+            </div>
+
+            <!-- Subcategory tabs -->
+            <div class="sub-tabs-wrap">
+              <div class="sub-tabs" id="sub-tabs">
+                <button class="sub-tab active" onclick="swSub('hot',this)">🔥 Hot Picks</button>
+                <button class="sub-tab" onclick="swSub('frenzyyy',this)">✍️ Frenzyyy's Work</button>
+                <button class="sub-tab" onclick="swSub('orasaraw',this)">✍️ Orasaraw's Work</button>
               </div>
+            </div>
+
+            <!-- Sub-panels -->
+            <div class="sub-panel active" id="sub-hot">
+              <div class="cw"><div class="carousel" id="hot-car"></div></div>
+            </div>
+            <div class="sub-panel" id="sub-frenzyyy">
+              <div class="cw"><div class="carousel" id="frenzyyy-car"></div></div>
+            </div>
+            <div class="sub-panel" id="sub-orasaraw">
+              <div class="cw"><div class="carousel" id="orasaraw-car"></div></div>
             </div>
           </div>
 
-          <!-- Stats -->
-          <div class="stats">
-            <div class="stat"><div class="stat-v" id="sn">—</div><div class="stat-l">📖 Novels</div></div>
-            <div class="stat"><div class="stat-v">—</div><div class="stat-l">📝 Chapters</div></div>
-            <div class="stat"><div class="stat-v">—</div><div class="stat-l">👥 Readers</div></div>
-          </div>
-
-          <!-- Genres -->
-          <div class="sec-hdr">
-            <h2 class="sec-ttl">Browse <span>Genres</span></h2>
-            <a class="see-all" href="#">All →</a>
-          </div>
-          <div class="genre-grid">
-            <div class="gc active" onclick="pg(this)"><span class="ge">⚔️</span>Fantasy</div>
-            <div class="gc" onclick="pg(this)"><span class="ge">💘</span>Romance</div>
-            <div class="gc" onclick="pg(this)"><span class="ge">🚀</span>Sci-Fi</div>
-            <div class="gc" onclick="pg(this)"><span class="ge">🌙</span>Cultivate</div>
-            <div class="gc" onclick="pg(this)"><span class="ge">🕵️</span>Mystery</div>
-            <div class="gc" onclick="pg(this)"><span class="ge">😂</span>Comedy</div>
-            <div class="gc" onclick="pg(this)"><span class="ge">👻</span>Horror</div>
-            <div class="gc" onclick="pg(this)"><span class="ge">🏮</span>Historical</div>
-          </div>
-
-          <!-- Trending -->
-          <div class="sec-hdr">
-            <h2 class="sec-ttl">🔥 <span>Trending</span></h2>
-            <a class="see-all" href="#">See all →</a>
-          </div>
-          <div class="cw"><div class="carousel" id="tr-car"></div></div>
-
-          <!-- Featured List -->
-          <div class="sec-hdr">
-            <h2 class="sec-ttl">✨ <span>Editor's Picks</span></h2>
-          </div>
-          <div id="pick-list"></div>
-
         </div><!-- /panel-home -->
 
-        <!-- ════ WHAT'S NEW ════ -->
+        <!-- ════ WHAT'S NEW TAB ════ -->
         <div class="tab-panel" id="panel-new">
-          <div class="sec-hdr"><h2 class="sec-ttl">✨ What's <span>New</span></h2></div>
-          <div class="cw"><div class="carousel" id="nw-car"></div></div>
-          <div id="nw-list"></div>
+          <div class="sec-block">
+            <div class="sec-hdr padded" style="margin-top:22px;"><h2 class="sec-ttl">✨ What's <span>New</span></h2></div>
+            <div class="cw"><div class="carousel" id="nw-car"></div></div>
+            <div id="nw-list" style="padding:0 16px;"></div>
+          </div>
         </div>
 
-        <!-- ════ UPDATES ════ -->
+        <!-- ════ UPDATES TAB ════ -->
         <div class="tab-panel" id="panel-updates">
-          <div class="sec-hdr"><h2 class="sec-ttl">🔄 Chapter <span>Updates</span></h2></div>
-          <div id="upd-list"></div>
+          <div class="sec-block" style="padding-top:22px;">
+            <div class="sec-hdr padded"><h2 class="sec-ttl">🔄 Chapter <span>Updates</span></h2></div>
+            <div id="upd-list"></div>
+          </div>
         </div>
 
-        <!-- ════ ANNOUNCEMENTS ════ -->
+        <!-- ════ ANNOUNCEMENTS TAB ════ -->
         <div class="tab-panel" id="panel-announce">
-          <div class="sec-hdr"><h2 class="sec-ttl">📢 <span>Announcements</span></h2></div>
-          <div id="ann-list"></div>
+          <div class="sec-block" style="padding-top:22px;">
+            <div class="sec-hdr padded"><h2 class="sec-ttl">📢 <span>Announcements</span></h2></div>
+            <div id="ann-list"></div>
+          </div>
         </div>
 
       </main>
-
       <footer>
         <strong>NovéLore</strong> &nbsp;|&nbsp; Read Without Limits<br/>
         © <span id="fy"></span> NovéLore · All rights reserved
       </footer>
-    </div><!-- /main-scroll -->
-  </div><!-- /app-wrap -->
+    </div>
+  </div>
 
 </div><!-- /screen-app -->
 
-<!-- ════════════════════════════════
-     SETTINGS SCREEN
-════════════════════════════════ -->
-<div id="screen-settings">
+<!-- ══════════ SETTINGS SCREEN ══════════ -->
+<div id="screen-settings" class="screen">
   <nav class="page-nav">
     <button class="back-btn" onclick="goHome()">← Back</button>
     <span class="page-nav-t">⚙️ Settings</span>
@@ -779,64 +480,51 @@ footer strong { color: var(--amber); }
       <div class="page-title">Settings</div>
       <div class="page-sub">Customise your NovéLore experience.</div>
 
-      <!-- Appearance card -->
       <div class="sc">
         <div class="sc-hdr"><span>🎨</span><h2>Appearance</h2></div>
         <div class="sc-body">
-
-          <!-- Toggle row -->
           <div class="theme-row">
-            <div class="theme-row-left">
+            <div class="theme-row-l">
               <span class="theme-icon" id="theme-icon">🌙</span>
               <div>
-                <div class="theme-label" id="theme-label">Dark Mode</div>
-                <div class="theme-sublabel" id="theme-sublabel">Easy on the eyes at night</div>
+                <div class="theme-lbl" id="theme-lbl">Dark Mode</div>
+                <div class="theme-sub" id="theme-sub">Easy on the eyes at night</div>
               </div>
             </div>
-            <label class="toggle-wrap" aria-label="Toggle theme">
-              <input type="checkbox" id="theme-toggle" onchange="applyThemeToggle(this.checked)"/>
+            <label class="toggle-wrap">
+              <input type="checkbox" id="theme-toggle" onchange="applyToggle(this.checked)"/>
               <span class="toggle-track"></span>
             </label>
           </div>
-
-          <!-- Visual picker -->
           <div class="theme-options">
             <div class="theme-opt active" id="opt-dark" onclick="setTheme('dark')">
-              <div class="opt-icon">🌙</div>
-              <div class="opt-label">Dark</div>
+              <div class="oi">🌙</div><div class="ol">Dark</div>
             </div>
             <div class="theme-opt" id="opt-light" onclick="setTheme('light')">
-              <div class="opt-icon">☀️</div>
-              <div class="opt-label">Light</div>
+              <div class="oi">☀️</div><div class="ol">Light</div>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- About card -->
       <div class="sc">
         <div class="sc-hdr"><span>ℹ️</span><h2>About</h2></div>
         <div class="sc-body">
-          <p style="font-size:.83rem;color:var(--text-muted);line-height:1.8;">
-            Version: <strong style="color:var(--text-main);">1.0.0</strong><br/>
-            Built with 🥕 and ❤️ for everyone by Frenzyyy.<br/>
-            <span style="font-size:.75rem;">Hosted on GitHub Pages.</span>
+          <p style="font-size:.82rem;color:var(--text-muted);line-height:1.8;">
+            Version: <strong style="color:var(--text-main)">1.0.0</strong><br/>
+            Built with 🥕 for readers everywhere.<br/>
+            <span style="font-size:.74rem;">Hosted on GitHub Pages.</span>
           </p>
         </div>
       </div>
 
     </div>
-    <footer>
-      <strong>NovéLore</strong> — Read Without Limits
-    </footer>
+    <footer><strong>NovéLore</strong> — Read Without Limits</footer>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     ABOUT SCREEN
-════════════════════════════════ -->
-<div id="screen-about">
+<!-- ══════════ ABOUT SCREEN ══════════ -->
+<div id="screen-about" class="screen">
   <nav class="page-nav">
     <button class="back-btn" onclick="goHome()">← Back</button>
     <span class="page-nav-t">ℹ️ About</span>
@@ -850,14 +538,14 @@ footer strong { color: var(--amber); }
       <div class="ab-sec">
         <h2>Our <span>Mission</span></h2>
         <p>✏️ <em>Replace this with your platform's story.</em> NovéLore gives readers a beautiful, distraction-free place to explore webnovels, comics, and animated stories from creators worldwide.</p>
-        <p>We believe every story deserves an audience — and every reader deserves a great experience on any device, at any time.</p>
+        <p>We believe every story deserves an audience — and every reader deserves a great experience on any device.</p>
       </div>
       <div class="ab-sec">
         <h2>Our <span>Values</span></h2>
         <div class="vg">
           <div class="vc"><div class="vi">📖</div><h3>Reader First</h3><p>Every decision starts with the reading experience.</p></div>
           <div class="vc"><div class="vi">✍️</div><h3>Creators</h3><p>Authors are the heartbeat of our platform.</p></div>
-          <div class="vc"><div class="vi">🌍</div><h3>Open to All</h3><p>Stories from every culture welcome.</p></div>
+          <div class="vc"><div class="vi">🌍</div><h3>Open to All</h3><p>Stories from every culture are welcome.</p></div>
           <div class="vc"><div class="vi">🔒</div><h3>Privacy</h3><p>No tracking. No ads. Just reading.</p></div>
         </div>
       </div>
@@ -870,62 +558,86 @@ footer strong { color: var(--amber); }
   </div>
 </div>
 
-<button id="scrolltop" onclick="stTop()" aria-label="Back to top">↑</button>
-<div id="toast" role="status" aria-live="polite"></div>
+<button id="scrolltop" onclick="stTop()">↑</button>
+<div id="toast"></div>
 
-<!-- ════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════════
      SCRIPT
-════════════════════════════════════════════════════ -->
+══════════════════════════════════════════════════════ -->
 <script>
 'use strict';
 
-/* ═══════════════════════════════════════════════════
-   ✏️  YOUR CONTENT — edit these to add novels etc.
-═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   ✏️  YOUR CONTENT — edit these arrays
+═══════════════════════════════════════════ */
 
-const heroData = {
-  title:       'Your Featured Novel Title',
-  description: 'Edit the <strong style="color:var(--amber)">heroData</strong> object in the &lt;script&gt; section to set your featured novel and description.',
-  bg:          'linear-gradient(135deg, #3B1A08 0%, #5A2510 55%, #C44B1A 100%)',
-};
-
-// Add your novels here. Each becomes a card in Trending / What's New.
-// Example entry (uncomment and fill in):
-// {
-//   id: 1,
-//   title: 'The Ember Throne Chronicles',
-//   author: 'Your Name',
-//   genre: 'Fantasy',
-//   description: 'A dragon empress reborn into a world that burned her.',
-//   emoji: '🐉',
-//   bg: 'linear-gradient(160deg, #E8622A, #3B1A08)',
-//   rating: 4.9,
-//   chapters: 48,
-//   status: 'Ongoing',   // Ongoing | Completed | Hiatus
-//   isTrending: true,
-//   isNew: true,
-//   isPick: true,        // shows in Editor's Picks on Home
-// }
-const novelsData = [
-  // ← paste your novels here
+// Up to 5 hero slides. Each becomes an auto-scrolling banner.
+const heroSlides = [
+  // ── Slide 1 — placeholder ──────────────────────────────
+  {
+    tag:         '🔥 Featured',
+    title:       'Slide 1 Title',
+    description: 'Edit heroSlides[0] in the script section to set your first featured banner.',
+    bg:          'linear-gradient(135deg, #3B1A08 0%, #5A2510 55%, #C44B1A 100%)',
+    readHref:    '#',
+  },
+  // ── Slide 2 ────────────────────────────────────────────
+  {
+    tag:         '✨ New Release',
+    title:       'Slide 2 Title',
+    description: 'Edit heroSlides[1] in the script section.',
+    bg:          'linear-gradient(135deg, #1A0D05 0%, #4A2210 60%, #E8622A 100%)',
+    readHref:    '#',
+  },
+  // ── Slide 3 ────────────────────────────────────────────
+  {
+    tag:         '⭐ Staff Pick',
+    title:       'Slide 3 Title',
+    description: 'Edit heroSlides[2] in the script section.',
+    bg:          'linear-gradient(135deg, #2C1206 0%, #6B3318 55%, #F5B942 100%)',
+    readHref:    '#',
+  },
+  // Add up to 2 more slides below (max 5 total):
+  // { tag:'', title:'', description:'', bg:'', readHref:'#' },
 ];
 
-// Add announcements. Show in the Announcements tab.
-// { title:'', body:'', type:'new', date:'2026-04-03' }
-// type options: new | event | system
-const announcementsData = [
-  // ← paste your announcements here
+// Novels for Hot Picks carousel
+// { title, emoji, bg, rating, genre, status }
+const hotPicks = [
+  // { title:'The Ember Throne', emoji:'🐉', bg:'linear-gradient(160deg,#E8622A,#3B1A08)', rating:4.9, genre:'Fantasy', status:'Ongoing' },
 ];
 
-// Add chapter updates. Show in the Updates tab.
-// { novelTitle:'', emoji:'📖', chapter:1, chapterTitle:'', time:'2h ago' }
-const updatesData = [
-  // ← paste your updates here
+// Novels by Frenzyyy
+const frenzyyyWork = [
+  // { title:'My Novel', emoji:'📖', bg:'linear-gradient(160deg,#C44B1A,#3B1A08)', rating:4.8, genre:'Action', status:'Ongoing' },
 ];
 
-/* ═══════════════════════════════════════════════════
-   THEME
-═══════════════════════════════════════════════════ */
+// Novels by Orasaraw
+const orasarawWork = [
+  // { title:'Her Story', emoji:'🌸', bg:'linear-gradient(160deg,#F5B942,#6B3318)', rating:4.7, genre:'Romance', status:'Completed' },
+];
+
+// What's New list  { title, emoji, bg, description, genre, status, rating, isNew }
+const novelsNew = [];
+
+// Chapter updates  { novelTitle, emoji, chapter, chapterTitle, time }
+const updatesData = [];
+
+// Announcements    { title, body, type, date }  type: new | event | system
+const announcementsData = [];
+
+// Notifications (placeholder — add real ones later)
+// { msg, time, read }
+const notificationsData = [
+  { msg: '📢 Welcome to NovéLore! Start exploring novels.', time: 'Just now', read: false },
+  { msg: '🔥 New chapters are available — check the Updates tab.', time: '5m ago', read: false },
+  { msg: '✨ Frenzyyy just posted a new chapter!', time: '1h ago', read: true },
+  { msg: '📖 Orasaraw\'s latest work has been added.', time: '3h ago', read: true },
+];
+
+/* ═══════════════════════════════════════════
+   STORAGE & THEME
+═══════════════════════════════════════════ */
 const LS = {
   get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
   set: (k,v) => localStorage.setItem(k, JSON.stringify(v)),
@@ -934,109 +646,243 @@ const LS = {
 function setTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
   LS.set('nl_theme', mode);
-  const isDark = mode === 'dark';
-  const toggle = document.getElementById('theme-toggle');
-  if (toggle) toggle.checked = isDark;
-  document.getElementById('theme-icon').textContent    = isDark ? '🌙' : '☀️';
-  document.getElementById('theme-label').textContent   = isDark ? 'Dark Mode' : 'Light Mode';
-  document.getElementById('theme-sublabel').textContent = isDark ? 'Easy on the eyes at night' : 'Bright and clean';
-  document.getElementById('opt-dark').classList.toggle('active', isDark);
-  document.getElementById('opt-light').classList.toggle('active', !isDark);
+  const dark = mode === 'dark';
+  const tog = document.getElementById('theme-toggle');
+  if (tog) tog.checked = dark;
+  document.getElementById('theme-icon').textContent = dark ? '🌙' : '☀️';
+  document.getElementById('theme-lbl').textContent  = dark ? 'Dark Mode' : 'Light Mode';
+  document.getElementById('theme-sub').textContent  = dark ? 'Easy on the eyes at night' : 'Bright and clean';
+  document.getElementById('opt-dark').classList.toggle('active', dark);
+  document.getElementById('opt-light').classList.toggle('active', !dark);
+}
+function applyToggle(checked) { setTheme(checked ? 'dark' : 'light'); }
+function loadTheme() { setTheme(LS.get('nl_theme') || 'dark'); }
+
+/* ═══════════════════════════════════════════
+   HERO SLIDESHOW
+═══════════════════════════════════════════ */
+let slideIdx    = 0;
+let slideTimer  = null;
+let progTimer   = null;
+let isAnimating = false;
+const SLIDE_MS  = 5000;
+
+function buildSlides() {
+  const slides = heroSlides.slice(0, 5);
+  if (!slides.length) return;
+
+  const track = document.getElementById('hero-track');
+  const dots  = document.getElementById('hero-dots');
+
+  track.innerHTML = slides.map(s => `
+    <div class="hero-slide" style="background:${esc(s.bg)}">
+      <div class="slide-pat"></div>
+      <div class="slide-glow"></div>
+      <div class="slide-body">
+        <div class="slide-tag">${esc(s.tag)}</div>
+        <h1>${esc(s.title)}</h1>
+        <p>${esc(s.description)}</p>
+        <div class="slide-acts">
+          <a class="btn-pri" href="${esc(s.readHref||'#')}">▶ Read Now</a>
+          <a class="btn-out" href="#">+ Bookmark</a>
+        </div>
+      </div>
+    </div>`).join('');
+
+  dots.innerHTML = slides.map((_,i) =>
+    `<button class="hero-dot${i===0?' active':''}" onclick="goSlide(${i})" aria-label="Slide ${i+1}"></button>`
+  ).join('');
+
+  goSlide(0);
+  startSlideAuto();
 }
 
-function applyThemeToggle(checked) {
-  setTheme(checked ? 'dark' : 'light');
+function goSlide(idx) {
+  if (isAnimating) return;
+  isAnimating = true;
+  const slides = Math.min(heroSlides.length, 5);
+  slideIdx = ((idx % slides) + slides) % slides;
+
+  document.getElementById('hero-track').style.transform = `translateX(-${slideIdx * 100}%)`;
+
+  document.querySelectorAll('.hero-dot').forEach((d,i) =>
+    d.classList.toggle('active', i === slideIdx));
+
+  setTimeout(() => { isAnimating = false; }, 650);
+  resetProgress();
 }
 
-function loadSavedTheme() {
-  const saved = LS.get('nl_theme') || 'dark';
-  setTheme(saved);
+function startSlideAuto() {
+  clearInterval(slideTimer);
+  slideTimer = setInterval(() => {
+    goSlide(slideIdx + 1);
+  }, SLIDE_MS);
 }
 
-/* ═══════════════════════════════════════════════════
+function resetProgress() {
+  const bar = document.getElementById('hero-progress');
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  void bar.offsetWidth; // force reflow
+  bar.style.transition = `width ${SLIDE_MS}ms linear`;
+  bar.style.width = '100%';
+}
+
+// Touch/swipe support on slider
+(function() {
+  let tx = 0;
+  const sl = document.getElementById('hero-slider');
+  sl.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive:true });
+  sl.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) {
+      goSlide(slideIdx + (dx < 0 ? 1 : -1));
+      startSlideAuto();
+    }
+  }, { passive:true });
+})();
+
+/* ═══════════════════════════════════════════
+   NOTIFICATION POPUP
+═══════════════════════════════════════════ */
+let notifOpen = false;
+let notifs    = notificationsData.map((n,i) => ({...n, id:i}));
+
+function renderNotifs() {
+  const el = document.getElementById('np-list');
+  const unread = notifs.filter(n => !n.read).length;
+
+  // Update dot
+  const dot = document.getElementById('notif-dot');
+  dot.classList.toggle('hidden', unread === 0);
+
+  if (!notifs.length) {
+    el.innerHTML = `<div class="np-empty"><span class="np-ei">🔔</span>No notifications yet</div>`;
+    return;
+  }
+
+  el.innerHTML = notifs.map(n => `
+    <div class="np-item${n.read?'':' unread'}" onclick="readNotif(${n.id})">
+      <span class="np-dot${n.read?' read':''}"></span>
+      <div class="np-body">
+        <div class="np-msg">${esc(n.msg)}</div>
+        <div class="np-time">${esc(n.time)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleNotif() {
+  notifOpen = !notifOpen;
+  const pop = document.getElementById('notif-popup');
+  pop.classList.toggle('show', notifOpen);
+  if (notifOpen) renderNotifs();
+}
+
+function readNotif(id) {
+  const n = notifs.find(x => x.id === id);
+  if (n) n.read = true;
+  renderNotifs();
+}
+
+function clearNotifs() {
+  notifs.forEach(n => n.read = true);
+  renderNotifs();
+}
+
+// Close notif popup when clicking outside
+document.addEventListener('click', e => {
+  if (!notifOpen) return;
+  const pop = document.getElementById('notif-popup');
+  const btn = document.getElementById('notif-btn');
+  if (!pop.contains(e.target) && !btn.contains(e.target)) {
+    notifOpen = false;
+    pop.classList.remove('show');
+  }
+});
+
+/* ═══════════════════════════════════════════
    SCREENS
-═══════════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 function showScreen(id) {
-  ['screen-app', 'screen-settings', 'screen-about'].forEach(s => {
-    document.getElementById(s).classList.remove('active');
-  });
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
 }
 
 function goHome() {
   closeSB();
   showScreen('screen-app');
-  document.getElementById('main-scroll').scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('main-scroll')?.scrollTo({ top:0, behavior:'smooth' });
+  // Mark Home active in sidebar
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.sb-link')[0]?.classList.add('active');
 }
 
 function goSettings() {
   closeSB();
   showScreen('screen-settings');
-  // Sync toggle to current theme
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  document.getElementById('theme-toggle').checked = isDark;
-  document.getElementById('screen-settings').querySelector('.page-scroll').scrollTop = 0;
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.getElementById('theme-toggle').checked = dark;
+  document.querySelector('#screen-settings .page-scroll').scrollTop = 0;
 }
 
 function goAbout() {
   closeSB();
   document.getElementById('fy2').textContent = new Date().getFullYear();
   showScreen('screen-about');
-  document.getElementById('screen-about').querySelector('.page-scroll').scrollTop = 0;
+  document.querySelector('#screen-about .page-scroll').scrollTop = 0;
 }
 
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    SIDEBAR
-═══════════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 function openSB()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('on'); }
 function closeSB() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('on'); }
-function toggleCat(btn) {
-  document.getElementById('sb-cat').classList.toggle('on');
-  btn.querySelector('.sb-arrow').classList.toggle('r');
-}
 
-/* ═══════════════════════════════════════════════════
-   TABS
-═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   MAIN TABS
+═══════════════════════════════════════════ */
 function swTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('panel-' + name).classList.add('active');
-  document.getElementById('main-scroll').scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('main-scroll').scrollTo({ top:0, behavior:'smooth' });
 }
 
-function pg(chip) {
-  document.querySelectorAll('.gc').forEach(c => c.classList.remove('active'));
-  chip.classList.add('active');
+/* ═══════════════════════════════════════════
+   SUBCATEGORY TABS
+═══════════════════════════════════════════ */
+function swSub(name, btn) {
+  document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sub-' + name).classList.add('active');
 }
 
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    RENDER HELPERS
-═══════════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 function esc(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function nCard(n, badge = '', bCls = '') {
-  const bdg = badge ? `<span class="nc-b ${bCls}">${badge}</span>` : '';
+function nCard(n, badge = '', bCls = 'new') {
   return `<div class="nc">
-    <div class="nc-cov" style="background:${esc(n.bg || 'linear-gradient(160deg,#E8622A,#3B1A08)')}">
-      <div class="nc-ph">${esc(n.emoji || '📖')}</div>${bdg}
+    <div class="nc-cov" style="background:${esc(n.bg||'linear-gradient(160deg,#E8622A,#3B1A08)')}">
+      <div class="nc-ph">${esc(n.emoji||'📖')}</div>
+      ${badge?`<span class="nc-b ${bCls}">${badge}</span>`:''}
     </div>
     <div class="nc-inf">
       <div class="nc-t">${esc(n.title)}</div>
-      <div class="nc-m"><span class="nc-s">★</span> ${(n.rating || 0).toFixed(1)} <span style="color:var(--carrot-pale)">•</span> ${esc(n.genre || '')}</div>
+      <div class="nc-m"><span class="nc-s">★</span> ${(n.rating||0).toFixed(1)} <span style="color:var(--carrot-pale)">•</span> ${esc(n.genre||'')}</div>
     </div>
   </div>`;
 }
 
-function phCard(label = 'Your Novel') {
+function phCard(label = 'Add Novel') {
   return `<div class="nc ph">
-    <div class="nc-cov" style="background:linear-gradient(160deg,#5a5a5a,#3a3a3a)">
-      <div class="nc-ph">📖</div>
-      <span class="nc-b" style="background:#666;">Soon</span>
+    <div class="nc-cov" style="background:linear-gradient(160deg,#555,#333)">
+      <div class="nc-ph">📖</div><span class="nc-b ph">Soon</span>
     </div>
     <div class="nc-inf">
       <div class="nc-t" style="color:var(--text-faint)">${esc(label)}</div>
@@ -1054,136 +900,110 @@ function emptyHTML(icon, title, msg, code = '') {
   </div>`;
 }
 
-/* ═══════════════════════════════════════════════════
-   RENDER CONTENT
-═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   RENDER ALL
+═══════════════════════════════════════════ */
 function renderAll() {
-  const trending = novelsData.filter(n => n.isTrending);
-  const isNew    = novelsData.filter(n => n.isNew);
-  const picks    = novelsData.filter(n => n.isPick);
+  document.getElementById('fy').textContent = new Date().getFullYear();
 
-  // Hero
-  document.getElementById('hero-el').style.background   = heroData.bg;
-  document.getElementById('hero-ttl').textContent        = heroData.title;
-  document.getElementById('hero-dsc').innerHTML          = heroData.description;
-  document.getElementById('sn').textContent              = novelsData.length || '—';
-  document.getElementById('fy').textContent              = new Date().getFullYear();
+  // Subcategory carousels
+  function fillCar(id, arr, badgeFn = () => '') {
+    const el = document.getElementById(id);
+    el.innerHTML = arr.length
+      ? arr.map((n,i) => nCard(n, badgeFn(n,i), i===0 ? 'hot' : 'new')).join('')
+      : [1,2,3,4,5].map((_,i) => phCard(
+          id === 'frenzyyy-car' ? "Frenzyyy's Novel" :
+          id === 'orasaraw-car' ? "Orasaraw's Novel" : 'Add Novel'
+        )).join('');
+  }
+  fillCar('hot-car',      hotPicks,     (n,i) => i === 0 ? '🔥 Hot' : '');
+  fillCar('frenzyyy-car', frenzyyyWork, () => '');
+  fillCar('orasaraw-car', orasarawWork, () => '');
 
-  // Trending carousel
-  document.getElementById('tr-car').innerHTML = trending.length
-    ? trending.map((n, i) => nCard(n, i === 0 ? '🔥 Hot' : '', i === 0 ? 'hot' : '')).join('')
-    : [1,2,3,4,5].map(() => phCard('Add Your Novel')).join('');
-
-  // What's New carousel
-  document.getElementById('nw-car').innerHTML = isNew.length
-    ? isNew.map(n => nCard(n, 'New')).join('')
+  // What's New
+  const nwCar  = document.getElementById('nw-car');
+  const nwList = document.getElementById('nw-list');
+  const newArr = novelsNew.filter(n => n.isNew);
+  nwCar.innerHTML = newArr.length
+    ? newArr.map(n => nCard(n,'New')).join('')
     : [1,2,3].map(() => phCard('Coming Soon')).join('');
-
-  // What's New list
-  document.getElementById('nw-list').innerHTML = !isNew.length
-    ? emptyHTML('🆕', 'No new titles yet',
-        'Set <strong>isNew: true</strong> on a novel in <strong>novelsData</strong> to feature it here.',
-        `// In novelsData array:\n{ title: 'My Novel', isNew: true, ... }`)
-    : isNew.map(n => `
+  nwList.innerHTML = !newArr.length
+    ? emptyHTML('🆕','No new titles yet','Set <strong>isNew: true</strong> on a novel in <strong>novelsNew</strong> to feature it here.',
+        `{ title:'My Novel', isNew: true, ... }`)
+    : newArr.map(n => `
         <div class="lc">
-          <div class="lc-cov">${esc(n.emoji || '📖')}</div>
+          <div class="lc-cov">${esc(n.emoji||'📖')}</div>
           <div class="lc-bd">
             <div class="lc-t">${esc(n.title)}</div>
-            <div class="lc-d">${esc(n.description || '')}</div>
-            <div class="tags">
-              <span class="tag o">${esc(n.genre || '')}</span>
-              <span class="tag">${esc(n.status || '')}</span>
-            </div>
+            <div class="lc-d">${esc(n.description||'')}</div>
+            <div class="tags"><span class="tag o">${esc(n.genre||'')}</span><span class="tag">${esc(n.status||'')}</span></div>
           </div>
         </div>`).join('');
 
-  // Editor's Picks
-  document.getElementById('pick-list').innerHTML = !picks.length
-    ? emptyHTML('✨', 'No picks yet',
-        'Set <strong>isPick: true</strong> on a novel in <strong>novelsData</strong> to show it here.',
-        `{ title: 'My Novel', isPick: true, ... }`)
-    : picks.map(n => `
-        <div class="lc">
-          <div class="lc-cov">${esc(n.emoji || '📖')}</div>
-          <div class="lc-bd">
-            <div class="lc-t">${esc(n.title)}</div>
-            <div class="lc-d">${esc(n.description || '')}</div>
-            <div class="tags">
-              <span class="tag o">${esc(n.genre || '')}</span>
-              <span class="tag">${esc(n.status || '')}</span>
-            </div>
+  // Updates
+  const updEl = document.getElementById('upd-list');
+  updEl.innerHTML = !updatesData.length
+    ? emptyHTML('🔄','No updates yet','Add objects to <strong>updatesData</strong> in the script section.',
+        `{ novelTitle:'My Novel', emoji:'📖',\n  chapter:5, chapterTitle:'The Beginning',\n  time:'2h ago' }`)
+    : updatesData.map((u,i) => `
+        <div class="upd">
+          <div class="upd-ico">${esc(u.emoji||'📖')}</div>
+          <div class="upd-bd">
+            <div class="upd-t">${esc(u.novelTitle)}${i<3?'<span class="np-pill">NEW</span>':''}</div>
+            <div class="upd-s">Chapter ${u.chapter} — ${esc(u.chapterTitle||'')}</div>
           </div>
+          <div class="upd-tm">${esc(u.time||'')}</div>
         </div>`).join('');
 
   // Announcements
   const annEl = document.getElementById('ann-list');
   if (!announcementsData.length) {
-    annEl.innerHTML = emptyHTML('📢', 'No announcements yet',
+    annEl.innerHTML = emptyHTML('📢','No announcements yet',
       'Add objects to <strong>announcementsData</strong> in the script section.',
-      `{ title: 'Welcome!', body: 'Platform is live.',\n  type: 'new',   // new | event | system\n  date: '2026-04-03' }`);
+      `{ title:'Welcome!', body:'Platform is live.',\n  type:'new',\n  date:'2026-04-03' }`);
   } else {
-    const lbl = { new: '✨ New', event: '🎉 Event', system: '⚙️ System' };
+    const lbl = { new:'✨ New', event:'🎉 Event', system:'⚙️ System' };
     annEl.innerHTML = announcementsData.map(a => `
       <div class="ann">
-        <span class="ann-tp ${esc(a.type || 'new')}">${lbl[a.type] || '✨ New'}</span>
-        <div class="ann-date">${esc(a.date || '')}</div>
+        <span class="ann-tp ${esc(a.type||'new')}">${lbl[a.type]||'✨ New'}</span>
+        <div class="ann-date">${esc(a.date||'')}</div>
         <h3>${esc(a.title)}</h3>
         <p>${esc(a.body)}</p>
       </div>`).join('');
   }
-
-  // Updates
-  const updEl = document.getElementById('upd-list');
-  if (!updatesData.length) {
-    updEl.innerHTML = emptyHTML('🔄', 'No updates yet',
-      'Add objects to <strong>updatesData</strong> in the script section.',
-      `{ novelTitle: 'My Novel', emoji: '📖',\n  chapter: 5, chapterTitle: 'The Beginning',\n  time: '2h ago' }`);
-  } else {
-    updEl.innerHTML = updatesData.map((u, i) => `
-      <div class="upd">
-        <div class="upd-ico">${esc(u.emoji || '📖')}</div>
-        <div class="upd-bd">
-          <div class="upd-t">${esc(u.novelTitle)}${i < 3 ? '<span class="np">NEW</span>' : ''}</div>
-          <div class="upd-s">Chapter ${u.chapter} — ${esc(u.chapterTitle || '')}</div>
-        </div>
-        <div class="upd-tm">${esc(u.time || '')}</div>
-      </div>`).join('');
-  }
 }
 
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    UTILS
-═══════════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 function toast(msg, dur = 2800) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), dur);
 }
-
 function stTop() {
-  const s = document.getElementById('main-scroll');
-  if (s) s.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('main-scroll')?.scrollTo({ top:0, behavior:'smooth' });
 }
 
-// Keyboard shortcuts
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeSB();
-});
-
-// Scroll to top button visibility
+// Scroll-to-top visibility
 window.addEventListener('load', () => {
   const s = document.getElementById('main-scroll');
   if (s) s.addEventListener('scroll', () => {
-    document.getElementById('scrolltop').classList.toggle('on', s.scrollTop > 280);
-  }, { passive: true });
+    document.getElementById('scrolltop').classList.toggle('on', s.scrollTop > 240);
+  }, { passive:true });
 });
 
-/* ═══════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeSB(); notifOpen = false; document.getElementById('notif-popup').classList.remove('show'); }
+});
+
+/* ═══════════════════════════════════════════
    BOOT
-═══════════════════════════════════════════════════ */
-loadSavedTheme();
-showScreen('screen-app');
+═══════════════════════════════════════════ */
+loadTheme();
 renderAll();
+buildSlides();
+renderNotifs();
 </script>
 </body>
 </html>
