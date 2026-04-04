@@ -182,7 +182,24 @@ ul{list-style:none;}
 
 /* ═══════════════ CAROUSEL / NOVEL CARDS ═══════════════ */
 .cw{margin-bottom:8px;}
-.carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 16px 4px;}
+.carousel{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+
+  padding:0 0 4px; /* remove side padding */
+  scroll-padding-left:16px;
+  scroll-padding-right:16px;
+}
+.carousel .nc:first-child {
+  margin-left:16px;
+}
+
+.carousel .nc:last-child {
+  margin-right:16px;
+}
 .carousel::-webkit-scrollbar{display:none;}
 .nc{flex:0 0 145px;scroll-snap-align:start;border-radius:var(--radius);overflow:hidden;background:var(--bg-card);box-shadow:var(--shadow);transition:transform .22s,box-shadow .22s,background var(--transition);}
 .nc:active{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
@@ -512,7 +529,7 @@ footer strong{color:var(--amber);}
         <div class="sc-body">
           <p style="font-size:.82rem;color:var(--text-muted);line-height:1.8;">
             Version: <strong style="color:var(--text-main)">1.0.0</strong><br/>
-            Built with 🥕 for readers everywhere.<br/>
+            Built with ♥️ and 🥕 by Frenzyyy.<br/>
             <span style="font-size:.74rem;">Hosted on GitHub Pages.</span>
           </p>
         </div>
