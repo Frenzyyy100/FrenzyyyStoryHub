@@ -806,7 +806,7 @@ footer strong{color:var(--amber);}
     <div class="contact-icon">📧</div>
     <div class="contact-info">
       <div class="contact-label">Business Email</div>
-      <div class="contact-text">frenzyyybusinessemail@gmail.com</div>
+      <div class="contact-text"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="026470676c787b7b7b6077716b6c677171676f636b6e42656f636b6e2c616d6f">[email&#160;protected]</a></div>
     </div>
   </div>
 
@@ -832,7 +832,7 @@ footer strong{color:var(--amber);}
 ════════════════════════════════════════════ -->
 
   <!-- Scripts -->
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 'use strict';
 
 /* ═══════════════════════════════════════════
@@ -1129,6 +1129,7 @@ function closeAllPanels() {
    SCREENS
 ═══════════════════════════════════════════ */
 function showScreen(id) {
+  LS.set('nl_screen', id);
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
@@ -1167,6 +1168,7 @@ let lastTab = 'home';
 
 function swTab(name, btn) {
   lastTab = name;
+  LS.set('nl_tab', name);
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
@@ -1390,7 +1392,10 @@ function stTop() { document.getElementById('main-scroll')?.scrollTo({top:0,behav
 
 window.addEventListener('load',()=>{
   const s=document.getElementById('main-scroll');
-  if(s) s.addEventListener('scroll',()=>document.getElementById('scrolltop').classList.toggle('on',s.scrollTop>240),{passive:true});
+  if(s) {
+    s.addEventListener('scroll',()=>document.getElementById('scrolltop').classList.toggle('on',s.scrollTop>240),{passive:true});
+    s.addEventListener('scroll',()=>LS.set('nl_scroll', s.scrollTop),{passive:true});
+  }
 });
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){closeSB();closeAllPanels();}
@@ -1463,6 +1468,44 @@ document.addEventListener('keydown', e=>{
   renderAll();
   updateNotifBadge();
 
+  // ── Restore last position after refresh ──────────────────────────────
+  const savedScreen = LS.get('nl_screen');
+  const savedTab    = LS.get('nl_tab');
+  const savedScroll = LS.get('nl_scroll');
+
+  // Restore screen (settings / about / app)
+  if (savedScreen && savedScreen !== 'screen-app' && document.getElementById(savedScreen)) {
+    showScreen(savedScreen);
+    if (savedScreen === 'screen-settings') {
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.getElementById('theme-toggle').checked = dark;
+    } else if (savedScreen === 'screen-about') {
+      document.getElementById('fy2').textContent = new Date().getFullYear();
+    }
+  }
+
+  // Restore active tab
+  if (savedTab) {
+    lastTab = savedTab;
+    const savedBtn = document.querySelector(`.tab-btn[data-tab="${savedTab}"]`);
+    if (savedBtn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      savedBtn.classList.add('active');
+      document.getElementById('panel-' + savedTab)?.classList.add('active');
+    }
+  }
+
+  // Restore scroll position (after paint so layout is ready)
+  if (savedScroll) {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        document.getElementById('main-scroll')?.scrollTo({ top: savedScroll, behavior: 'instant' });
+      }, 80);
+    });
+  }
+  // ─────────────────────────────────────────────────────────────────────
+
   // Wire search bar
   const si = document.getElementById('search-input');
   if (si) {
@@ -1473,14 +1516,17 @@ document.addEventListener('keydown', e=>{
       handleSearch(q);
     });
     si.addEventListener('search', e => { // fires when X is cleared
-      if (!e.target.value) { handleSearch(''); const hero = document.getElementById('hero-slider'); if(hero) hero.style.opacity=''; }
+      if (!e.target.value) {
+        handleSearch('');
+        const hero = document.getElementById('hero-slider');
+        if (hero) hero.style.opacity = '';
+      }
     });
   }
 
-  // Signal the loading bar that all synchronous rendering is done
-  if (typeof window._lsAfterRender === 'function') window._lsAfterRender();
+  // Signal the loading bar that rendering is done (advances bar to 75%)
+  window._lsAfterRender?.();
 })();
-
-  </script>
+</script>
 </body>
 </html>
