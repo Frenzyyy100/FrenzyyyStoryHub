@@ -67,13 +67,15 @@ ul{list-style:none;}
 /* ══════════ PANEL OVERLAY (notifications full / bookmark) ══════════ */
 .panel-overlay{
   position:fixed;inset:0;z-index:200;
-  background:transparent;   /* ← no dark dim */
+  background:transparent;
   opacity:0;
   pointer-events:none;
-  transition:opacity .28s;
-  backdrop-filter:none;     /* ← remove blur */
+  transition:opacity .28s, background .28s;
+  backdrop-filter:none;
 }
 .panel-overlay.on{opacity:1;pointer-events:all;}
+/* When a full drawer is open, dim + blur the background */
+.panel-overlay.dimmed{background:rgba(10,4,0,.55);backdrop-filter:blur(2px);}
 
 /* ══════════ SIDE DRAWER (full notif + bookmark) ══════════ */
 .side-drawer{
@@ -89,24 +91,38 @@ ul{list-style:none;}
 .side-drawer.open{right:0;}
 .drawer-hdr{
   display:flex;align-items:center;justify-content:space-between;
-  padding:18px 20px 14px;
+  padding:16px 20px 13px;
   border-bottom:1px solid var(--border);
-  flex-shrink:0;
+  flex-shrink:0;gap:10px;
 }
-.drawer-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--text-main);}
+.drawer-hdr-l{display:flex;align-items:center;gap:9px;min-width:0;}
+.drawer-hdr-r{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.drawer-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--text-main);white-space:nowrap;}
+.drawer-count{
+  font-size:.68rem;font-weight:700;
+  color:var(--carrot);background:rgba(232,98,42,.13);
+  border:1px solid rgba(232,98,42,.22);
+  padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;
+}
+.drawer-action{
+  font-size:.73rem;font-weight:600;color:var(--text-muted);
+  background:var(--bg-elevated);border:1px solid var(--border);
+  border-radius:8px;padding:5px 11px;
+  transition:all .2s;white-space:nowrap;
+}
+.drawer-action:hover{color:var(--carrot);border-color:var(--carrot);background:rgba(232,98,42,.08);}
+.drawer-action.danger:hover{color:#E84242;border-color:#E84242;background:rgba(232,66,66,.08);}
 .drawer-close{
   width:32px;height:32px;border-radius:50%;
   background:var(--bg-elevated);color:var(--text-muted);
   display:flex;align-items:center;justify-content:center;
-  font-size:1rem;transition:background .2s;
+  font-size:1rem;transition:background .2s;flex-shrink:0;
 }
 .drawer-close:hover{background:var(--carrot);color:#fff;}
-.drawer-body{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
-.drawer-footer{
-  padding:13px 20px;border-top:1px solid var(--border);
-  text-align:center;flex-shrink:0;
-}
-.drawer-footer a{font-size:.8rem;font-weight:600;color:var(--carrot);}
+.drawer-body{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border-mid) transparent;}
+.drawer-body::-webkit-scrollbar{width:4px;}
+.drawer-body::-webkit-scrollbar-track{background:transparent;}
+.drawer-body::-webkit-scrollbar-thumb{background:var(--border-mid);border-radius:4px;}
 
 /* ══════════ NOTIFICATION ITEMS (shared) ══════════ */
 .np-item{display:flex;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .18s;}
@@ -130,7 +146,7 @@ ul{list-style:none;}
   border-radius:16px;
   box-shadow:var(--shadow-lg);
   border:1px solid var(--border-mid);
-  z-index:150;
+  z-index:220;
   opacity:0;pointer-events:none;
   transform:translateY(-8px) scale(.97);
   transition:opacity .2s,transform .2s;
@@ -161,7 +177,7 @@ ul{list-style:none;}
   border-radius:16px;
   box-shadow:var(--shadow-lg);
   border:1px solid var(--border-mid);
-  z-index:150;
+  z-index:220;
   opacity:0;pointer-events:none;
   transform:translateY(-8px) scale(.97);
   transition:opacity .2s,transform .2s;
@@ -606,7 +622,46 @@ footer strong{color:var(--amber);}
   40%{transform:scale(1);opacity:1;}
 }
 
+
+/* ══════════ LOADING SCREEN — LIGHT MODE ══════════ */
+[data-theme="light"] #loading-screen {
+  background: #FFF8F0;
+}
+[data-theme="light"] #loading-screen::before {
+  opacity: .05;
+}
+[data-theme="light"] #loading-screen::after {
+  background: radial-gradient(circle, rgba(232,98,42,.10), transparent 70%);
+}
+[data-theme="light"] .ls-logo {
+  color: var(--carrot);
+}
+[data-theme="light"] .ls-logo em {
+  color: var(--carrot-deep);
+}
+[data-theme="light"] .ls-sub {
+  color: rgba(107,51,24,.5);
+}
+[data-theme="light"] .ls-bar-wrap {
+  background: rgba(44,18,6,.1);
+}
+[data-theme="light"] .ls-dot {
+  background: rgba(232,98,42,.35);
+}
+
   </style>
+
+  <!-- ⚡ Apply saved theme BEFORE first paint — eliminates light/dark flash on load -->
+  <script>
+  (function(){
+    try {
+      var t = JSON.parse(localStorage.getItem('nl_theme'));
+      if (t === 'light' || t === 'dark') {
+        document.documentElement.setAttribute('data-theme', t);
+      }
+    } catch(e) {}
+  })();
+  </script>
 </head>
 <body>
 <!-- ── LOADING SCREEN ── -->
@@ -651,25 +706,31 @@ footer strong{color:var(--amber);}
 <!-- ── FULL NOTIFICATION DRAWER ── -->
 <div id="notif-drawer" class="side-drawer">
   <div class="drawer-hdr">
-    <span class="drawer-title">🔔 All Notifications</span>
-    <button class="drawer-close" onclick="closeDrawer('notif-drawer')">✕</button>
+    <div class="drawer-hdr-l">
+      <span class="drawer-title">🔔 Notifications</span>
+      <span class="drawer-count" id="notif-drawer-count"></span>
+    </div>
+    <div class="drawer-hdr-r">
+      <button class="drawer-action" onclick="markAllReadDrawer()">Mark all read</button>
+      <button class="drawer-close" onclick="closeDrawer('notif-drawer')">✕</button>
+    </div>
   </div>
   <div class="drawer-body" id="notif-drawer-list"></div>
-  <div class="drawer-footer">
-    <span style="font-size:.75rem;color:var(--text-muted);">Showing all notifications</span>
-  </div>
 </div>
 
 <!-- ── FULL BOOKMARK DRAWER ── -->
 <div id="bm-drawer" class="side-drawer">
   <div class="drawer-hdr">
-    <span class="drawer-title">🔖 My Bookmarks</span>
-    <button class="drawer-close" onclick="closeDrawer('bm-drawer')">✕</button>
+    <div class="drawer-hdr-l">
+      <span class="drawer-title">🔖 My Bookmarks</span>
+      <span class="drawer-count" id="bm-drawer-count"></span>
+    </div>
+    <div class="drawer-hdr-r">
+      <button class="drawer-action danger" onclick="clearAllBookmarks()">Clear all</button>
+      <button class="drawer-close" onclick="closeDrawer('bm-drawer')">✕</button>
+    </div>
   </div>
   <div class="drawer-body" id="bm-drawer-list"></div>
-  <div class="drawer-footer">
-    <a href="#">Browse more novels →</a>
-  </div>
 </div>
 
 <!-- ── SIDEBAR ── -->
@@ -967,7 +1028,7 @@ footer strong{color:var(--amber);}
     <div class="contact-icon">📧</div>
     <div class="contact-info">
       <div class="contact-label">Business Email</div>
-      <div class="contact-text">frenzyyybusinessemail@gmail.com</div>
+      <div class="contact-text"><a href="mailto:frenzyyybusinessemail@gmail.com" class="contact-link">frenzyyybusinessemail@gmail.com</a></div>
     </div>
   </div>
 
@@ -992,8 +1053,7 @@ footer strong{color:var(--amber);}
      SCRIPT
 ════════════════════════════════════════════ -->
 
-  <!-- Scripts -->
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
 'use strict';
 
 /* ═══════════════════════════════════════════
@@ -1221,8 +1281,15 @@ function renderMiniNotifs() {
 
 function renderDrawerNotifs() {
   const el = document.getElementById('notif-drawer-list');
+  const countEl = document.getElementById('notif-drawer-count');
+  const unread = unreadCount();
+  if (countEl) {
+    if (notifs.length === 0) countEl.textContent = '';
+    else if (unread > 0) countEl.textContent = unread + ' unread';
+    else countEl.textContent = notifs.length + ' total';
+  }
   if (!notifs.length) {
-    el.innerHTML = `<div class="np-empty"><span class="np-empty-icon">🔔</span><p>No notifications yet.</p></div>`;
+    el.innerHTML = `<div class="np-empty"><span class="np-empty-icon">🔔</span><p>You're all caught up! No notifications yet.</p></div>`;
     return;
   }
   el.innerHTML = notifs.map(n=>`
@@ -1240,15 +1307,17 @@ function toggleNotifMini() {
   notifMiniOpen = !notifMiniOpen;
   const mini = document.getElementById('notif-mini');
   mini.classList.toggle('show', notifMiniOpen);
-  if (notifMiniOpen) { renderMiniNotifs(); document.getElementById('panel-overlay').classList.add('on'); }
-  else { document.getElementById('panel-overlay').classList.remove('on'); }
+  if (notifMiniOpen) { renderMiniNotifs(); }
+  // panel-overlay is only used for the full drawer backdrop, not the mini popup
 }
 
 function openNotifDrawer() {
   closeAllMinis();
   renderDrawerNotifs();
   document.getElementById('notif-drawer').classList.add('open');
-  document.getElementById('panel-overlay').classList.add('on');
+  const ov = document.getElementById('panel-overlay');
+  ov.classList.add('on');
+  ov.classList.add('dimmed');
 }
 
 function readNotif(id) {
@@ -1258,6 +1327,16 @@ function readNotif(id) {
 function markAllRead() {
   notifs.forEach(n=>n.read=true);
   updateNotifBadge(); renderMiniNotifs(); renderDrawerNotifs();
+}
+function markAllReadDrawer() {
+  markAllRead();
+}
+function clearAllBookmarks() {
+  if (!bookmarks.length) return;
+  bookmarks = [];
+  renderDrawerBookmarks();
+  renderMiniBookmarks();
+  toast('All bookmarks cleared');
 }
 
 /* ═══════════════════════════════════════════
@@ -1287,6 +1366,8 @@ function renderMiniBookmarks() {
 
 function renderDrawerBookmarks() {
   const el = document.getElementById('bm-drawer-list');
+  const countEl = document.getElementById('bm-drawer-count');
+  if (countEl) countEl.textContent = bookmarks.length > 0 ? bookmarks.length + ' saved' : '';
   if (!bookmarks.length) {
     el.innerHTML=`<div class="np-empty"><span class="np-empty-icon">🔖</span><p>No bookmarks yet. Tap the bookmark button on any novel to save it here.</p></div>`;
     return;
@@ -1328,26 +1409,35 @@ function toggleBmMini() {
   bmMiniOpen = !bmMiniOpen;
   const mini = document.getElementById('bm-mini');
   mini.classList.toggle('show', bmMiniOpen);
-  if (bmMiniOpen) { renderMiniBookmarks(); document.getElementById('panel-overlay').classList.add('on'); }
-  else { document.getElementById('panel-overlay').classList.remove('on'); }
+  if (bmMiniOpen) { renderMiniBookmarks(); }
+  // panel-overlay is only used for the full drawer backdrop, not the mini popup
 }
 
 function openBmDrawer() {
   closeAllMinis();
   renderDrawerBookmarks();
   document.getElementById('bm-drawer').classList.add('open');
-  document.getElementById('panel-overlay').classList.add('on');
+  const ov = document.getElementById('panel-overlay');
+  ov.classList.add('on');
+  ov.classList.add('dimmed');
 }
 
 function closeNotifMini() { notifMiniOpen=false; document.getElementById('notif-mini').classList.remove('show'); }
 function closeBmMini()    { bmMiniOpen=false;    document.getElementById('bm-mini').classList.remove('show'); }
-function closeDrawer(id)  { document.getElementById(id).classList.remove('open'); document.getElementById('panel-overlay').classList.remove('on'); }
+function closeDrawer(id) {
+  document.getElementById(id).classList.remove('open');
+  const ov = document.getElementById('panel-overlay');
+  ov.classList.remove('on');
+  ov.classList.remove('dimmed');
+}
 function closeAllMinis()  { closeNotifMini(); closeBmMini(); }
 function closeAllPanels() {
   closeAllMinis();
   document.getElementById('notif-drawer').classList.remove('open');
   document.getElementById('bm-drawer').classList.remove('open');
-  document.getElementById('panel-overlay').classList.remove('on');
+  const ov = document.getElementById('panel-overlay');
+  ov.classList.remove('on');
+  ov.classList.remove('dimmed');
 }
 
 /* ═══════════════════════════════════════════
@@ -1627,6 +1717,20 @@ document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){closeSB();closeAllPanels();}
 });
 
+// Close mini popups when clicking outside them
+document.addEventListener('click', e => {
+  const notifMini = document.getElementById('notif-mini');
+  const bmMini    = document.getElementById('bm-mini');
+  const notifBtn  = document.getElementById('notif-btn');
+  const bmBtn     = document.getElementById('bm-btn');
+  if (notifMiniOpen && !notifMini.contains(e.target) && !notifBtn.contains(e.target)) {
+    closeNotifMini();
+  }
+  if (bmMiniOpen && !bmMini.contains(e.target) && !bmBtn.contains(e.target)) {
+    closeBmMini();
+  }
+}, true);
+
 /* ═══════════════════════════════════════════
    LOADING BAR — driven by real browser events
 ═══════════════════════════════════════════ */
@@ -1748,14 +1852,20 @@ document.addEventListener('keydown', e=>{
     si.addEventListener('search', e => { // fires when X is cleared
       if (!e.target.value) {
         handleSearch('');
-        const hero = document.getElementById('hero-slider');
+        const hero= document.getElementById('hero-slider');
         if (hero) hero.style.opacity = '';
       }
     });
   }
 
-  // Signal to loading bar that rendering is done
-  if (window._lsAfterRender) window._lsAfterRender();
+  // Call the loading-bar render hook now that init is done
+  if (typeof window._lsAfterRender === 'function') window._lsAfterRender();
+
+  // Set current year in footers
+  const fyEl = document.getElementById('fy');
+  if (fyEl) fyEl.textContent = new Date().getFullYear();
+  const fy2El = document.getElementById('fy2');
+  if (fy2El) fy2El.textContent = new Date().getFullYear();
 })();
 </script>
 </body>
