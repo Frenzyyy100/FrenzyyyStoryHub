@@ -860,7 +860,7 @@ footer strong{color:var(--amber);}
 
 
 /* ══════════ NOVEL PAGE ══════════ */
-#screen-novel,#screen-chapter{flex-direction:column;}
+##screen-novel,#screen-chapter{flex-direction:column;height:100dvh;overflow:hidden;}
 .novel-hero-band{
   background:var(--bg-elevated);
   padding:20px 18px 24px;
@@ -980,7 +980,7 @@ footer strong{color:var(--amber);}
   position:sticky;top:var(--nav-h);z-index:79;}
 .reading-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--carrot),var(--amber));
   transition:width .1s linear;}
-.chapter-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.chapter-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overflow-anchor:none;}
 .chapter-body-wrap{max-width:680px;margin:0 auto;padding:28px 20px 32px;}
 .ch-hdr-block{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
 .ch-hdr-vol-label{font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
@@ -1574,8 +1574,8 @@ footer strong{color:var(--amber);}
       <div class="ch-prose" id="ch-prose"></div>
       <div class="ch-end-mark"><span>— End of Chapter —</span></div>
     </div>
-    <div class="ch-nav-strip" id="ch-nav-strip"></div>
   </div>
+  <div class="ch-nav-strip" id="ch-nav-strip"></div>
 </div>
 
 <!-- ════ END-OF-STORY SCREEN ════ -->
@@ -2162,7 +2162,7 @@ function goHome() {
     savedBtn.classList.add('active');
     document.getElementById('panel-'+lastTab).classList.add('active');
   }
-  document.getElementById('main-scroll')?.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('main-scroll')?.scrollTo({top:0,behavior:'instant'});
 }
 function goSettings() {
   closeSB(); showScreen('screen-settings');
@@ -2215,13 +2215,14 @@ function swTab(name, btn) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('panel-'+name).classList.add('active');
-  document.getElementById('main-scroll').scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('main-scroll').scrollTo({top:0,behavior:'instant'});
 }
 function swSub(name, btn) {
   document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('sub-'+name).classList.add('active');
+  document.getElementById('main-scroll')?.scrollTo({top:0,behavior:'instant'});
 }
 
 /* ═══════════════════════════════════════════
@@ -2726,7 +2727,7 @@ He had found a way.
             title: 'Compromise',
             date: 'Jan 17, 2026',
             volTitle: 'False Summer Arc',
-            content: `***
+            content: `---
 
 
 Sarelia was already inside the tunnel when Takeshi dropped through the trapdoor and pulled it shut above him.
@@ -3331,7 +3332,7 @@ Then he adjusted his shades and smiled back at Sarelia.
             title: 'Our Separate Ways',
             date: 'Jan 20, 2026',
             volTitle: 'False Summer Arc',
-            content: `***
+            content: `---
 
 
 “Everything's not fine.” A voice of an adult man said.
@@ -3529,7 +3530,7 @@ Sarelia was silent at the moment, still crossing her arms and looking straightfo
 Especially for Sean.
 
 
-***
+---
 
 
 5:00PM in the afternoon, hallway of the Pact base.
@@ -3642,7 +3643,7 @@ So he stayed silent—just like Sean—as Sarelia disappeared from sight.`,
             title: 'Reminisce',
             date: 'Jan 24, 2026',
             volTitle: 'False Summer Arc',
-            content: `***
+            content: `---
 
 
 7:14PM in the night. A town somewhere in Kaihon.
@@ -3905,7 +3906,9 @@ The festival had begun.`,
             title: 'White Leopard',
             date: 'Feb 24, 2026',
             volTitle: 'False Summer Arc',
-            content: `A cloudy afternoon hung over a small town in Kaihon.
+            content: `---
+            
+            A cloudy afternoon hung over a small town in Kaihon.
 
 
 Inside a ramen shop, a television played a horse race. A few customers watched while eating, caught up in the excitement as their chosen horse surged forward toward the finish line.
@@ -4659,7 +4662,12 @@ function openChapter(novelId, chapterNum) {
 
   showScreen('screen-chapter');
   const scroll = document.getElementById('chapter-scroll');
-  scroll.scrollTo({top:0,behavior:'instant'});
+  scroll.scrollTop = 0;
+  window.scrollTo(0, 0);
+  setTimeout(() => {
+    scroll.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }, 0);
   _watchReadingProgress(scroll);
 }
 
