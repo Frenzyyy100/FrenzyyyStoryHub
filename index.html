@@ -1565,6 +1565,7 @@ footer strong{color:var(--amber);}
         <h2>v0.6.6 <span>— Current</span></h2>
         <div class="changelog-version-meta">🗓 April 2026 · Beta</div>
         <div class="changelog-list">
+            <div class="changelog-item new">✨ Bookmarks now persist — saved and restored across visits</div>
             <div class="changelog-item new">✨ Notifications now persist — read/cleared state saved and restored across visits</div>
           <div class="changelog-item fix">🐛 Fixed end screen looping back when clicking the back button after finishing a chapter</div>
           <div class="changelog-item fix">🐛 Fixed NEW tag showing on last 3 chapters — now only shows on the latest chapter</div>
@@ -2088,6 +2089,7 @@ function markAllReadDrawer() {
 function clearAllBookmarks() {
   if (!bookmarks.length) return;
   bookmarks = [];
+  _saveBookmarkState();
   renderDrawerBookmarks();
   renderMiniBookmarks();
   _refreshNovelBmBtn();
@@ -2099,6 +2101,18 @@ function clearAllBookmarks() {
 ═══════════════════════════════════════════ */
 let bookmarks = bookmarksData.map((b,i)=>({...b,id:String(i)}));
 let _bmIdCtr = bookmarksData.length;
+(function _loadBookmarkState(){
+  try {
+    const saved = LS.get('nl_bookmarks');
+    if (Array.isArray(saved) && saved.length) {
+      bookmarks = saved;
+      _bmIdCtr = saved.reduce((max,b) => Math.max(max, parseInt(b.id)||0), 0) + 1;
+    }
+  } catch(e) {}
+})();
+function _saveBookmarkState() {
+  try { LS.set('nl_bookmarks', bookmarks); } catch(e) {}
+}
 function _nextBmId() { return String(_bmIdCtr++); }
 let bmMiniOpen = false;
 
@@ -2178,17 +2192,13 @@ function goToNovel(href) {
 function removeBookmark(e, id) {
   e.preventDefault(); e.stopPropagation();
   bookmarks = bookmarks.filter(b=>String(b.id)!==String(id));
-  renderMiniBookmarks();
-  renderDrawerBookmarks();
-  _refreshNovelBmBtn();
+  _saveBookmarkState(); renderMiniBookmarks(); renderDrawerBookmarks(); updateNotifBadge(); _refreshNovelBmBtn();
   toast('Bookmark removed');
 }
 function removeBookmarkDrawer(e, id) {
   e.stopPropagation();
   bookmarks = bookmarks.filter(b=>String(b.id)!==String(id));
-  renderDrawerBookmarks();
-  renderMiniBookmarks();
-  _refreshNovelBmBtn();
+  _saveBookmarkState(); renderMiniBookmarks(); renderDrawerBookmarks(); updateNotifBadge(); _refreshNovelBmBtn();
   toast('Bookmark removed');
 }
 
@@ -2243,7 +2253,7 @@ function toggleSlideBookmark(novelId, btn) {
     bookmarks.push({ id:_nextBmId(), novelId:nd.id, title:nd.title, emoji:nd.emoji, bg:nd.bg, genre:(nd.genres||[nd.genre||''])[0], href:'#', coverImg:nd.coverImg||'' });
     toast('📖 Bookmarked!');
   }
-  renderMiniBookmarks(); renderDrawerBookmarks(); _refreshNovelBmBtn();
+  _saveBookmarkState(); renderMiniBookmarks(); renderDrawerBookmarks(); updateNotifBadge(); _refreshNovelBmBtn();
 }
 
 /* Clear all notifications */
@@ -4727,7 +4737,7 @@ function toggleNovelBookmark(novelId) {
     bookmarks.push({ id: _nextBmId(), novelId: nd.id, title: nd.title, emoji: nd.emoji, bg: nd.bg, genre: (nd.genres||[nd.genre||''])[0], href:'#', coverImg: nd.coverImg||'' });
     toast('📖 Bookmarked!');
   }
-  renderMiniBookmarks(); renderDrawerBookmarks(); updateNotifBadge(); _refreshNovelBmBtn();
+  _saveBookmarkState(); renderMiniBookmarks(); renderDrawerBookmarks(); updateNotifBadge(); _refreshNovelBmBtn();
   // Refresh bm button
   const btn = document.getElementById('novel-bm-btn');
   if (btn) {
