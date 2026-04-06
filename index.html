@@ -1527,7 +1527,7 @@ footer strong{color:var(--amber);}
     <div class="contact-icon">📧</div>
     <div class="contact-info">
       <div class="contact-label">Business Email</div>
-      <div class="contact-text">frenzyyybusinessemail@gmail.com</div>
+      <div class="contact-text"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4d2b3f2823373434342f383e2423283e3e28202c24210d2a202c2421632e2220">[email&#160;protected]</a></div>
     </div>
   </div>
 
@@ -1716,7 +1716,7 @@ footer strong{color:var(--amber);}
      SCRIPT
 ════════════════════════════════════════════ -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 'use strict';
 
 /* ═══════════════════════════════════════════
@@ -1775,11 +1775,15 @@ const announcementsData = [
   { title:'📖 Vol. 1 Has Begun — False Summer Arc', body:'The Lantern Pact: Prologue is officially live. New chapters dropping regularly — free to read.', type:'event', date:'January 17, 2026', novelId:'lantern' },
 ];
 
-// Notifications — { msg, time, read }
+// Notifications — { id, msg, time, read }
+// IMPORTANT: always give each entry a unique stable `id` string.
+// If you add a new notification, prepend it with a new unique id (e.g. 'notif-ch8').
+// Never reuse an id — the read-state is persisted by id, so reusing one will
+// cause the new notification to appear already-read for returning visitors.
 const notificationsData = [
-{ msg:'🐰 Ch. 7 is live — "A New Hand"! The reassignment to take the spot is here.',           time:'Mar 20, 2026',   read:false },
-  { msg:'🐰 Ch. 6 is live — "White Leopard"! The predator is now hunting for prey soon.',           time:'Feb 24, 2026',   read:true },
-  { msg:'📢 Welcome to NovéLore! Tap any novel card to start reading.',                    time:'Jan 17, 2026',   read:true  },
+{ id:'notif-ch7',      msg:'🐰 Ch. 7 is live — "A New Hand"! The reassignment to take the spot is here.',           time:'Mar 20, 2026',   read:false },
+  { id:'notif-ch6',    msg:'🐰 Ch. 6 is live — "White Leopard"! The predator is now hunting for prey soon.',           time:'Feb 24, 2026',   read:true },
+  { id:'notif-welcome',msg:'📢 Welcome to NovéLore! Tap any novel card to start reading.',                    time:'Jan 17, 2026',   read:true  },
 ];
 
 // Bookmarks — { title, novelId, emoji, bg, genre, href, coverImg? }
@@ -1997,7 +2001,8 @@ function goSlide(idx) {
 /* ═══════════════════════════════════════════
    NOTIFICATIONS
 ═══════════════════════════════════════════ */
-let notifs = notificationsData.map((n,i)=>({...n,id:i}));
+// Use the entry's own stable `id` if present; fall back to index for legacy entries.
+let notifs = notificationsData.map((n,i)=>({ ...n, id: n.id !== undefined ? n.id : i }));
 (function _loadNotifState(){
   try {
     const saved = LS.get('nl_notif_state');
@@ -5418,9 +5423,7 @@ const Loader = (() => {
     });
   }
 
-  await Loader.wait(180);
-
-  // ── Done: fade out loading screen
+  // ── Step 8: done — dismiss loading screen
   await Loader.dismiss();
 
 })();
