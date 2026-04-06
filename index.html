@@ -1167,7 +1167,6 @@ footer strong{color:var(--amber);}
       <span class="drawer-count" id="notif-drawer-count"></span>
     </div>
     <div class="drawer-hdr-r">
-      <button class="drawer-action danger" onclick="clearAllNotifications()">Clear all</button>
       <button class="drawer-action" onclick="markAllReadDrawer()">Mark all read</button>
       <button class="drawer-close" onclick="closeDrawer('notif-drawer')">✕</button>
     </div>
@@ -1183,7 +1182,6 @@ footer strong{color:var(--amber);}
       <span class="drawer-count" id="bm-drawer-count"></span>
     </div>
     <div class="drawer-hdr-r">
-      <button class="drawer-action danger" onclick="clearAllBookmarks()">Clear all</button>
       <button class="drawer-close" onclick="closeDrawer('bm-drawer')">✕</button>
     </div>
   </div>
@@ -1565,6 +1563,8 @@ footer strong{color:var(--amber);}
         <h2>v0.6.6 <span>— Current</span></h2>
         <div class="changelog-version-meta">🗓 April 2026 · Beta</div>
         <div class="changelog-list">
+            <div class="changelog-item tweak">⚙️ Removed "Clear all" button from notifications drawer</div>
+<div class="changelog-item tweak">⚙️ Removed "Clear all" button from bookmarks drawer</div>
             <div class="changelog-item new">✨ Bookmarks now persist — saved and restored across visits</div>
             <div class="changelog-item new">✨ Notifications now persist — read/cleared state saved and restored across visits</div>
           <div class="changelog-item fix">🐛 Fixed end screen looping back when clicking the back button after finishing a chapter</div>
