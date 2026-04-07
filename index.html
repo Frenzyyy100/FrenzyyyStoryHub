@@ -1527,7 +1527,7 @@ footer strong{color:var(--amber);}
     <div class="contact-icon">📧</div>
     <div class="contact-info">
       <div class="contact-label">Business Email</div>
-      <div class="contact-text"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4d2b3f2823373434342f383e2423283e3e28202c24210d2a202c2421632e2220">[email&#160;protected]</a></div>
+      <div class="contact-text">frenzyyybusinessemail@gmail.com</div>
     </div>
   </div>
 
@@ -4058,7 +4058,9 @@ The festival had begun.`,
             title: 'White Leopard',
             date: 'Feb 24, 2026',
             volTitle: 'False Summer Arc',
-            content: `A cloudy afternoon hung over a small town in Kaihon.
+            content: `---
+            
+            A cloudy afternoon hung over a small town in Kaihon.
 
 Inside a ramen shop, a television played a horse race. A few customers watched while eating, caught up in the excitement as their chosen horse surged forward toward the finish line.
 
@@ -5124,10 +5126,10 @@ function openChapter(novelId, chapterNum) {
     </div>`;
 
   // Chapter prose — split on double newlines → <p> tags
-  const paras = (ch.content||'').split(/\n\n+/).filter(p=>p.trim());
-  document.getElementById('ch-prose').innerHTML = paras.map(p => {
-    const txt = p.trim();
-    if (txt === '---') return '<div class="ch-scene-break">· · ·</div>';
+  const paras = (ch.content||'').replace(/^---$/gm, '\n\n---\n\n').split(/\n\n+/).filter(p=>p.trim());
+document.getElementById('ch-prose').innerHTML = paras.map(p => {
+  const txt = p.trim();
+  if (txt === '---') return '<div class="ch-scene-break">· · ·</div>';
     // Italics: *text* → <em>text</em>
     const html = esc(txt).replace(/\*([^*]+)\*/g, '<em>$1</em>');
     return `<p>${html}</p>`;
