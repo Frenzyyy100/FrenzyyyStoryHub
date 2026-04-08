@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" data-theme-source="system">
+<html lang="en" data-theme="light" data-theme-source="system">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
@@ -564,12 +564,30 @@ ul{list-style:none;}
 .changelog-version-meta{font-size:.72rem;color:var(--carrot);font-weight:600;margin-bottom:12px;letter-spacing:.3px;}
 .changelog-list{display:flex;flex-direction:column;gap:8px;}
 .changelog-item{font-size:.82rem;line-height:1.55;padding:10px 13px;border-radius:10px;color:var(--text-main);}
-.changelog-item.new{background:rgba(232,98,42,.1);border-left:3px solid var(--carrot);}
-.changelog-item.fix{background:rgba(232,66,66,.08);border-left:3px solid #E84242;}
-.changelog-item.tweak{background:rgba(245,185,66,.08);border-left:3px solid var(--amber);}
-[data-theme="light"] .changelog-item.new{background:rgba(232,98,42,.08);}
-[data-theme="light"] .changelog-item.fix{background:rgba(232,66,66,.06);}
-[data-theme="light"] .changelog-item.tweak{background:rgba(245,185,66,.07);}
+.changelog-item.new{background:rgba(232,98,42,.18);border-left:3px solid var(--carrot);}
+.changelog-item.fix{background:rgba(220,60,60,.16);border-left:3px solid #E84242;}
+.changelog-item.tweak{background:rgba(245,185,66,.16);border-left:3px solid var(--amber);}
+[data-theme="light"] .changelog-item.new{background:rgba(232,98,42,.14);border-left-color:var(--carrot);}
+[data-theme="light"] .changelog-item.fix{background:rgba(220,60,60,.13);border-left-color:#E84242;}
+[data-theme="light"] .changelog-item.tweak{background:rgba(245,185,66,.18);border-left-color:var(--amber);}
+
+/* Changelog hero — theme-aware gradient */
+.changelog-hero{
+  background:linear-gradient(135deg,#1A0D05 0%,#3B1A08 60%,#6B3318 100%);
+  transition:background var(--tr);
+}
+.changelog-hero h1{color:var(--amber);}
+.changelog-hero p{color:rgba(255,240,230,.65);}
+/* Changelog hero — light mode: inherits about-hero's orange gradient, white text */
+[data-theme="light"] .changelog-hero h1{color:#FFF0E6;}
+[data-theme="light"] .changelog-hero p{color:rgba(255,240,230,.88);}
+
+/* About hero — light mode: vibrant orange gradient, white text */
+[data-theme="light"] .about-hero{
+  background:linear-gradient(135deg,#C44B1A 0%,#E8622A 60%,#F5B942 100%);
+}
+[data-theme="light"] .about-hero h1{color:#FFF0E6;}
+[data-theme="light"] .about-hero p{color:rgba(255,240,230,.88);}
 
 /* ══════════ FOOTER ══════════ */
 footer{background:#22100A;color:rgba(255,240,230,.38);padding:24px 16px;text-align:center;font-size:.74rem;line-height:1.8;}
@@ -1044,12 +1062,9 @@ footer strong{color:var(--amber);}
 [data-theme="light"] .ann h3{color:var(--text-main);}
 [data-theme="light"] .ann p{color:var(--text-muted);}
 [data-theme="light"] .ann-date{color:var(--carrot-deep);}
-[data-theme="light"] .ann-tp.new{background:rgba(232,98,42,.15);color:var(--carrot-deep);}
-[data-theme="light"] .ann-tp.event{background:rgba(160,100,0,.12);color:#8a5c00;}
-[data-theme="light"] .ann-tp.system{background:rgba(44,18,6,.08);color:var(--text-muted);}
-
-/* ══════════ LIGHT MODE — ABOUT HERO ══════════ */
-[data-theme="light"] .about-hero{background:linear-gradient(135deg,#C44B1A 0%,#E8622A 60%,#F5B942 100%);}
+[data-theme="light"] .ann-tp.new{background:rgba(232,98,42,.18);color:var(--carrot-deep);}
+[data-theme="light"] .ann-tp.event{background:rgba(160,100,0,.17);color:#8a5c00;}
+[data-theme="light"] .ann-tp.system{background:rgba(44,18,6,.12);color:var(--text-muted);}
 
 /* ══════════ LIGHT MODE — UPDATE & NOTIFICATION ITEMS ══════════ */
 [data-theme="light"] .upd{background:var(--bg-card);box-shadow:0 2px 10px rgba(44,18,6,.07);}
@@ -1211,10 +1226,6 @@ footer strong{color:var(--amber);}
   <header id="topnav">
     <button class="burger" onclick="openSB()"><span></span><span></span><span></span></button>
     <span class="nav-logo">Novél<em>ore</em></span>
-    <label class="nav-search">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="search" id="search-input" placeholder="Search…"/>
-    </label>
     <!-- Bookmark button -->
     <button class="nav-ico" id="bm-btn" onclick="toggleBmMini()" aria-label="Bookmarks">
       🔖
@@ -1305,8 +1316,8 @@ footer strong{color:var(--amber);}
       <div class="sc-body">
         <div class="theme-row">
           <div class="theme-row-l">
-            <span class="theme-icon" id="theme-icon">🌙</span>
-            <div><div class="theme-lbl" id="theme-lbl">Dark Mode</div><div class="theme-sub" id="theme-sub">Easy on the eyes at night</div></div>
+            <span class="theme-icon" id="theme-icon">🖥️</span>
+            <div><div class="theme-lbl" id="theme-lbl">System Default</div><div class="theme-sub" id="theme-sub">Follows your OS light/dark setting</div></div>
           </div>
           <label class="toggle-wrap">
             <input type="checkbox" id="theme-toggle" onchange="applyToggle(this.checked)"/>
@@ -1315,8 +1326,8 @@ footer strong{color:var(--amber);}
         </div>
         <div class="theme-options">
           <div class="theme-opt" id="opt-light" onclick="setTheme('light')"><div class="oi">☀️</div><div class="ol">Light</div></div>
-          <div class="theme-opt active" id="opt-dark" onclick="setTheme('dark')"><div class="oi">🌙</div><div class="ol">Dark</div></div>
-          <div class="theme-opt" id="opt-system" onclick="setTheme('system')"><div class="oi">🖥️</div><div class="ol">System</div></div>
+          <div class="theme-opt" id="opt-dark" onclick="setTheme('dark')"><div class="oi">🌙</div><div class="ol">Dark</div></div>
+          <div class="theme-opt active" id="opt-system" onclick="setTheme('system')"><div class="oi">🖥️</div><div class="ol">System</div></div>
         </div>
         <p style="font-size:.71rem;color:var(--text-faint);margin-top:10px;line-height:1.6;padding:0 2px;">
           <strong style="color:var(--text-muted)">System</strong> automatically follows your device's light/dark setting and updates live.
@@ -1497,7 +1508,7 @@ footer strong{color:var(--amber);}
     <!-- ── About ── -->
     <div class="sc">
       <div class="sc-hdr"><span>ℹ️</span><h2>About</h2></div>
-      <div class="sc-body"><p style="font-size:.82rem;color:var(--text-muted);line-height:1.8;">Version: <strong style="color:var(--text-main)">Beta v0.6.6</strong><br/>Built with ❤️ and 🥕 by Frenzyyy.<br/><span style="font-size:.74rem;">Hosted on GitHub Pages.</span></p>
+      <div class="sc-body"><p style="font-size:.82rem;color:var(--text-muted);line-height:1.8;">Version: <strong style="color:var(--text-main)">Beta v0.6.7</strong><br/>Built with ❤️ and 🥕 by Frenzyyy.<br/><span style="font-size:.74rem;">Hosted on GitHub Pages.</span></p>
       <div style="margin-top:12px;">
         <button class="setting-action-btn" onclick="goAbout()" style="width:100%;justify-content:center;">ℹ️ View Full About Page →</button>
       </div></div>
@@ -1553,14 +1564,24 @@ footer strong{color:var(--amber);}
     <span class="page-nav-t">📋 Changelog</span>
   </nav>
   <div class="page-scroll">
-    <div class="about-hero" style="background:linear-gradient(135deg,#1A0D05 0%,#3B1A08 60%,#6B3318 100%);">
+    <div class="about-hero changelog-hero">
       <h1 style="font-size:clamp(1.5rem,5vw,2.2rem);">What's Changed</h1>
       <p>Every fix, feature, and update to NovéLore — tracked and documented.</p>
     </div>
     <div class="page-body">
 
       <div class="ab-sec">
-        <h2>v0.6.6 <span>— Current</span></h2>
+        <h2>v0.6.7 <span>— Current</span></h2>
+        <div class="changelog-version-meta">🗓 April 2026 · Beta</div>
+        <div class="changelog-list">
+          <div class="changelog-item new">✨ Changelog page now fully respects your theme — Light, Dark, and System modes all apply correctly</div>
+          <div class="changelog-item tweak">⚙️ Changelog hero banner is now theme-aware (removed hardcoded dark gradient)</div>
+          <div class="changelog-item tweak">⚙️ About hero banner now adapts to Light Mode for consistent theming across all pages</div>
+        </div>
+      </div>
+
+      <div class="ab-sec">
+        <h2>v0.6.6 <span>— Previous</span></h2>
         <div class="changelog-version-meta">🗓 April 2026 · Beta</div>
         <div class="changelog-list">
             <div class="changelog-item tweak">⚙️ Removed "Clear all" button from notifications drawer</div>
@@ -1716,7 +1737,7 @@ footer strong{color:var(--amber);}
      SCRIPT
 ════════════════════════════════════════════ -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 'use strict';
 
 /* ═══════════════════════════════════════════
@@ -1794,8 +1815,14 @@ const bookmarksData = [];
 ═══════════════════════════════════════════ */
 const LS = {
   get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-  set: (k,v) => localStorage.setItem(k, JSON.stringify(v)),
+  set: (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
 };
+
+// Hard failsafe: if init hangs for any reason, force-dismiss after 6s
+setTimeout(() => {
+  const ls = document.getElementById('loading-screen');
+  if (ls) { ls.style.transition = 'none'; ls.remove(); }
+}, 6000);
 function setTheme(mode) {
   const isSystem = mode === 'system';
   let resolved = mode;
@@ -2311,8 +2338,10 @@ function goHome() {
 }
 function goSettings() {
   closeSB(); showScreen('screen-settings');
-  const dark = document.documentElement.getAttribute('data-theme')==='dark';
-  document.getElementById('theme-toggle').checked = dark;
+  // Fully resync the theme UI (toggle, icon, label, subtitle, option buttons)
+  const source = document.documentElement.getAttribute('data-theme-source');
+  const saved  = LS.get('nl_theme');
+  setTheme(source === 'system' ? 'system' : (saved || 'system'));
   restoreReadingPrefs();
   // Populate novel progress for every novel dynamically
   try {
@@ -5373,6 +5402,7 @@ const Loader = (() => {
   Loader.setP(90, 'Restoring your session…');
   await Loader.wait(120);
 
+  try {
   const savedScreen = LS.get('nl_screen');
   const savedTab    = LS.get('nl_tab');
   const savedScroll = LS.get('nl_scroll');
@@ -5405,6 +5435,7 @@ const Loader = (() => {
       }, 80);
     });
   }
+  } catch(e) { console.error('Session restore error:', e); }
 
   // ── Step 7: wire search
   Loader.setP(96, 'Almost ready…');
@@ -5426,7 +5457,7 @@ const Loader = (() => {
     });
   }
 
-  // ── Step 8: done — dismiss loading screen
+  // ── Step 8: dismiss loader
   await Loader.dismiss();
 
 })();
