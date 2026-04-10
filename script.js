@@ -14,25 +14,24 @@ const heroSlides = [
     title:       'The Lantern Pact: Prologue',
     description: 'Three mismatched members of the Kaihon Light Pact navigate missions, secrets, and something far bigger moving in the shadows.',
     bg:          'linear-gradient(135deg,#2C1206 0%,#5A1A08 55%,#C44B1A 100%)',
-    readHref:    '#',
     novelId:     'lantern',
-    coverImg: 'https://i.imgur.com/iQMtLH9.png',
+    coverImg:    'https://i.imgur.com/iQMtLH9.png',
   },
   {
-    tag:         '🔥 New Chapter',
-    title:       'The Lantern Pact: Prologue',
-    description: 'The Lantern Pact: Prologue has dropped a new chapter. Go check it out and read the latest chapter! Stay tuned for more updates!',
-    bg:          'linear-gradient(135deg,#060D2C 0%,#0F2A5A 55%,#1A6BC4 100%)',
-    readHref:    '#',
-    coverImg: 'https://i.imgur.com/iQMtLH9.png',
-
-  },
-  {
-    tag:         '🥕 Working in Progress',
-    title:       'Bunny is working!',
-    description: 'Thank you for visiting Novélore! I am trying my very best to build this website to its fullest. Build with love and carrot by Frenzyyy.',
-    bg:          'linear-gradient(135deg,#0D0620 0%,#1E0A4A 55%,#3A1A8C 100%)',
-  },
+    tag:         '🔥 New Chapter',
+    title:       'The Lantern Pact: Prologue',
+    description: 'The Lantern Pact: Prologue has dropped a new chapter. Go check it out and read the latest chapter! Stay tuned for more updates!',
+    bg:          'linear-gradient(135deg,#060D2C 0%,#0F2A5A 55%,#1A6BC4 100%)',
+    novelId:     'lantern',
+    coverImg:    'https://i.imgur.com/iQMtLH9.png',
+    bookmark:    false,
+  },
+  {
+    tag:         '🥕 Working in Progress',
+    title:       'Bunny is working!',
+    description: 'Thank you for visiting Novélore! I am trying my very best to build this website to its fullest. Build with love and carrot by Frenzyyy.',
+    bg:          'linear-gradient(135deg,#0D0620 0%,#1E0A4A 55%,#3A1A8C 100%)',
+  },
 ];
 
 // Novel cards — { title, novelId, emoji, bg, rating, genre, status, coverImg? }
@@ -309,7 +308,7 @@ function buildSlides() {
         ${s.description ? `<p>${esc(s.description)}</p>` : ''}
         ${(s.novelId || s.readHref) ? `<div class="slide-acts">
           ${s.novelId ? `<button class="btn-pri" onclick="openNovel('${s.novelId}')">▶ Read Now</button>` : `<a class="btn-pri" href="${safeUrl(s.readHref)}" rel="noopener noreferrer">▶ Read Now</a>`}
-          ${s.novelId ? `<button class="btn-out slide-bm-btn" id="slide-bm-${s.novelId}" onclick="toggleSlideBookmark('${s.novelId}',this)">${bookmarks.some(b=>b.novelId===s.novelId)?'🔖 Saved':'🔖 Bookmark'}</button>` : ''}
+          ${(s.novelId && s.bookmark !== false) ? `<button class="btn-out slide-bm-btn" id="slide-bm-${s.novelId}" onclick="toggleSlideBookmark('${s.novelId}',this)">${bookmarks.some(b=>b.novelId===s.novelId)?'🔖 Saved':'🔖 Bookmark'}</button>` : ''}
         </div>` : ''}
       </div>
     </div>`;
