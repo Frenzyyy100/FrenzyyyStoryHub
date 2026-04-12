@@ -1,6 +1,7 @@
 # Terms of Service — NovéLore
 
 **Effective Date:** April 13, 2026
+
 **Last Updated:** April 13, 2026
 
 ---
