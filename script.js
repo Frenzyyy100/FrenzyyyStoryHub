@@ -3,10 +3,6 @@ Copyright © 2026 Frenzyyy. All Rights Reserved.
 
 This source code is proprietary and confidential. Unauthorized copying, redistribution, or use of this code, in whole or in part, is strictly prohibited.
 */
-
-/* ═══════════════════════════════════════════
-  CONTENT
-═══════════════════════════════════════════ */
 // ── Security ──
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('keydown', e => {
@@ -17,6 +13,20 @@ document.addEventListener('keydown', e => {
   ) e.preventDefault();
 });
 document.addEventListener('selectstart', e => e.preventDefault());
+// ── Console Easter Egg ──
+console.log(`
+(\\(\\
+( -.-)
+o_(")(")
+
+Hey! Nothing to see here.
+Built with love and carrot 🥕 by Frenzyyy.
+`);
+console.log('%c🐰 NovéLore', 'font-size:30px; color:#E8622A; font-weight:bold;');
+console.log('%cThis site is protected. Snooping around? Shame on you! 😤', 'color:#C44B1A;');
+/* ═══════════════════════════════════════════
+   CONTENT
+═══════════════════════════════════════════ */
 // Hero slides (max 5) — leave empty to show the "coming soon" panel
 // Fields: { tag, title, description, bg, readHref, coverImg? }
 //   coverImg — URL to book cover image (https://... or relative path). Omit to show the title's first letter.
