@@ -8,7 +8,16 @@ This source code is proprietary and confidential. Unauthorized copying, redistri
 /* ═══════════════════════════════════════════
   CONTENT
 ═══════════════════════════════════════════ */
-
+// ── Security ──
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (
+    (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'p')) ||
+    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+    e.key === 'F12'
+  ) e.preventDefault();
+});
+document.addEventListener('selectstart', e => e.preventDefault());
 // Hero slides (max 5) — leave empty to show the "coming soon" panel
 // Fields: { tag, title, description, bg, readHref, coverImg? }
 //   coverImg — URL to book cover image (https://... or relative path). Omit to show the title's first letter.
