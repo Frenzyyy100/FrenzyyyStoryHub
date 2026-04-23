@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"/>
+<script>
+  // Redirect to index.html and reopen the novel modal if ?id= is present
+  var id = new URLSearchParams(window.location.search).get('id');
+  window.location.replace('index.html' + (id ? '?reopen=' + encodeURIComponent(id) : ''));
+</script>
+</head><body></body></html>
